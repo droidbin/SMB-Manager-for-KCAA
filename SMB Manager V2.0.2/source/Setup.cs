@@ -19,11 +19,29 @@ namespace SmbManagerSetup
         private const string UninstallShortcutName = "SMB Manager Uninstall.lnk";
 
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SetupForm());
+            Application.Run(new SetupForm(GetSourceAppPath(args)));
+        }
+
+        private static string GetSourceAppPath(string[] args)
+        {
+            if (args == null)
+            {
+                return string.Empty;
+            }
+
+            for (var i = 0; i + 1 < args.Length; i++)
+            {
+                if (string.Equals(args[i], "--app-path", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Path.GetFullPath(args[i + 1]);
+                }
+            }
+
+            return string.Empty;
         }
 
         private static class SetupFonts
@@ -115,6 +133,7 @@ namespace SmbManagerSetup
             private const int ForcedExitWaitMilliseconds = 5000;
             private static readonly uint InstallerExitMessage = RegisterWindowMessage("SmbManager.Setup.RequestExit");
             private readonly TextBox _installPathBox;
+            private readonly string _sourceAppPath;
             private readonly CheckBox _desktopShortcutBox;
             private readonly CheckBox _startMenuShortcutBox;
         private readonly CheckBox _startupShortcutBox;
@@ -138,8 +157,9 @@ namespace SmbManagerSetup
             [return: MarshalAs(UnmanagedType.Bool)]
             private static extern bool PostMessage(IntPtr windowHandle, uint message, IntPtr wParam, IntPtr lParam);
 
-            public SetupForm()
+            public SetupForm(string sourceAppPath)
             {
+                _sourceAppPath = sourceAppPath;
                 Text = ProductName + " Setup";
                 StartPosition = FormStartPosition.CenterScreen;
                 MinimumSize = new Size(680, 560);
@@ -236,7 +256,7 @@ namespace SmbManagerSetup
                 try
                 {
                     _installButton.Enabled = false;
-                    var sourceApp = FindSourceApp();
+                    var sourceApp = FindSourceApp(_sourceAppPath);
                     var installDir = _installPathBox.Text.Trim();
                     if (string.IsNullOrWhiteSpace(installDir))
                     {
@@ -427,8 +447,18 @@ namespace SmbManagerSetup
                 }
             }
 
-            private static string FindSourceApp()
+            private static string FindSourceApp(string sourceAppPath)
             {
+                if (!string.IsNullOrWhiteSpace(sourceAppPath))
+                {
+                    if (!File.Exists(sourceAppPath))
+                    {
+                        throw new FileNotFoundException("The SMB Manager app file could not be found.", sourceAppPath);
+                    }
+
+                    return sourceAppPath;
+                }
+
                 var setupDir = AppDomain.CurrentDomain.BaseDirectory;
                 var files = Directory.GetFiles(setupDir, SetupProgram.ProductName + " V*.exe")
                     .Where(path => !Path.GetFileName(path).Equals("Setup.exe", StringComparison.OrdinalIgnoreCase))

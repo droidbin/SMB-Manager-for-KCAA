@@ -2193,9 +2193,6 @@ namespace SmbManager
                 var bootstrapRoot = Path.Combine(Path.GetTempPath(), "SMB Manager Bootstrap", CurrentVersionText + "-" + Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(bootstrapRoot);
 
-                var sourceApp = Path.Combine(bootstrapRoot, "SMB Manager " + CurrentVersionText + ".exe");
-                File.Copy(Application.ExecutablePath, sourceApp, true);
-
                 var setupPath = Path.Combine(bootstrapRoot, "Setup.exe");
                 ExtractEmbeddedFile(EmbeddedSetupResourceName, setupPath);
                 ExtractEmbeddedFile(EmbeddedUninstallResourceName, Path.Combine(bootstrapRoot, "Uninstall.exe"));
@@ -2216,6 +2213,7 @@ namespace SmbManager
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = setupPath,
+                    Arguments = "--app-path \"" + Application.ExecutablePath + "\"",
                     WorkingDirectory = bootstrapRoot,
                     UseShellExecute = true
                 });
