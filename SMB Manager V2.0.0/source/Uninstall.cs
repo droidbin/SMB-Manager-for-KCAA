@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -32,6 +33,9 @@ namespace SmbManagerUninstall
             private readonly CheckBox _removeUserDataBox;
             private readonly TextBox _logBox;
             private readonly Button _uninstallButton;
+            private readonly Label _challengeLabel;
+            private readonly TextBox _challengeInput;
+            private string _challengeCode;
             private readonly string _runDir = AppDomain.CurrentDomain.BaseDirectory;
             private readonly string _installDir = ResolveInstallDirectory();
 
@@ -65,10 +69,11 @@ namespace SmbManagerUninstall
                     Dock = DockStyle.Fill,
                     Padding = new Padding(16),
                     ColumnCount = 1,
-                    RowCount = 4
+                    RowCount = 5
                 };
                 root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
                 root.RowStyles.Add(new RowStyle(SizeType.Absolute, 72));
+                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 56));
                 root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
                 root.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
                 Controls.Add(root);
@@ -91,6 +96,16 @@ namespace SmbManagerUninstall
                 options.Controls.Add(_removeUserDataBox);
                 root.Controls.Add(options, 0, 1);
 
+                var challenge = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, Padding = new Padding(8), BackColor = Color.White };
+                challenge.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+                challenge.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
+                _challengeLabel = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft };
+                _challengeInput = new TextBox { Dock = DockStyle.Fill, MaxLength = 4, TextAlign = HorizontalAlignment.Center, Font = new Font(Font.FontFamily, 12f, FontStyle.Bold) };
+                challenge.Controls.Add(_challengeLabel, 0, 0);
+                challenge.Controls.Add(_challengeInput, 1, 0);
+                root.Controls.Add(challenge, 0, 2);
+                RefreshChallenge();
+
                 _logBox = new TextBox
                 {
                     Dock = DockStyle.Fill,
@@ -100,7 +115,7 @@ namespace SmbManagerUninstall
                     BackColor = Color.FromArgb(17, 24, 39),
                     ForeColor = Color.FromArgb(230, 230, 230)
                 };
-                root.Controls.Add(_logBox, 0, 2);
+                root.Controls.Add(_logBox, 0, 3);
 
                 var buttons = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft };
                 _uninstallButton = new Button { Text = "제거", Width = 90, Height = 32 };
@@ -109,7 +124,7 @@ namespace SmbManagerUninstall
                 closeButton.Click += delegate { Close(); };
                 buttons.Controls.Add(_uninstallButton);
                 buttons.Controls.Add(closeButton);
-                root.Controls.Add(buttons, 0, 3);
+                root.Controls.Add(buttons, 0, 4);
 
                 Log("실행 경로: " + _runDir);
                 Log("제거 대상 설치 경로: " + _installDir);
@@ -117,6 +132,15 @@ namespace SmbManagerUninstall
 
             private void Uninstall()
             {
+                if (!string.Equals(_challengeInput.Text.Trim(), _challengeCode, StringComparison.Ordinal))
+                {
+                    MessageBox.Show("보안문자 숫자 4자리가 일치하지 않습니다.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    _challengeInput.Clear();
+                    RefreshChallenge();
+                    _challengeInput.Focus();
+                    return;
+                }
+
                 if (MessageBox.Show("SMB Manager를 제거할까요?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
@@ -144,6 +168,19 @@ namespace SmbManagerUninstall
                     MessageBox.Show("제거 중 오류가 발생했습니다.\r\n" + error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _uninstallButton.Enabled = true;
                 }
+            }
+
+            private void RefreshChallenge()
+            {
+                var bytes = new byte[4];
+                using (var random = RandomNumberGenerator.Create())
+                {
+                    random.GetBytes(bytes);
+                }
+
+                var value = BitConverter.ToUInt32(bytes, 0) % 9000 + 1000;
+                _challengeCode = value.ToString("D4");
+                _challengeLabel.Text = "계속하려면 보안문자 숫자 4자리를 입력하세요:  " + _challengeCode;
             }
 
             private void StopRunningApplications()
