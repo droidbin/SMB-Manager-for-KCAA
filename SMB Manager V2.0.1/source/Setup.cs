@@ -142,8 +142,8 @@ namespace SmbManagerSetup
             {
                 Text = ProductName + " Setup";
                 StartPosition = FormStartPosition.CenterScreen;
-                MinimumSize = new Size(560, 430);
-                Size = new Size(640, 480);
+                MinimumSize = new Size(680, 560);
+                Size = new Size(780, 640);
                 Font = SetupFonts.Regular(9f);
                 BackColor = Color.FromArgb(243, 246, 250);
 
@@ -154,11 +154,11 @@ namespace SmbManagerSetup
                     ColumnCount = 1,
                     RowCount = 5
                 };
-                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
-                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 88));
-                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 140));
+                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 64));
+                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 96));
+                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 176));
                 root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
+                root.RowStyles.Add(new RowStyle(SizeType.Absolute, 56));
                 Controls.Add(root);
 
                 root.Controls.Add(new Label

@@ -1785,23 +1785,9 @@ namespace SmbManager
 
         private bool IsStartupLaunch()
         {
-            try
-            {
-                var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
-                if (!File.Exists(shortcutPath))
-                {
-                    return false;
-                }
-                var shellType = Type.GetTypeFromProgID("WScript.Shell");
-                var shell = Activator.CreateInstance(shellType);
-                var shortcut = shellType.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { shortcutPath });
-                var arguments = (string)shortcut.GetType().InvokeMember("Arguments", System.Reflection.BindingFlags.GetProperty, null, shortcut, null);
-                return (arguments ?? string.Empty).IndexOf("--startup", StringComparison.OrdinalIgnoreCase) >= 0;
-            }
-            catch
-            {
-                return false;
-            }
+            return Environment.GetCommandLineArgs()
+                .Skip(1)
+                .Any(argument => string.Equals(argument, "--startup", StringComparison.OrdinalIgnoreCase));
         }
 
         private void EnsureStartupShortcut()
