@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -228,7 +228,6 @@ namespace SmbManager
         private const string UpdateRepositoryUrl = "https://github.com/droidbin/smb-manager/releases/latest";
         private const string EmptyResultLogMessage = "아직 기록된 처리 결과가 없습니다.";
         private const string AdminDepartmentLabel = "관리자";
-        private const string ShortcutName = "SMB Manager.lnk";
         private const string EmbeddedSetupResourceName = "SmbManager.Bootstrap.Setup.exe";
         private const string EmbeddedUninstallResourceName = "SmbManager.Bootstrap.Uninstall.exe";
 
@@ -239,7 +238,6 @@ namespace SmbManager
         private bool _adminAuthenticated;
         private bool _automaticUpdate = true;
         private bool _connectionMonitorEnabled = true;
-        private bool _startWithWindows;
         private int _connectionMonitorIntervalSeconds = 60;
         private string _lastMonitorSummary = string.Empty;
         private string _adminPasswordSalt = string.Empty;
@@ -311,7 +309,7 @@ namespace SmbManager
             CleanupDuplicateExecutablesInCurrentDirectory();
             LoadSettings();
             CleanupPreviousInstalledVersions();
-            EnsureStartupShortcut();
+            TryDeleteFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "SMB Manager.lnk"));
             BuildUi();
             RestoreLastDepartment();
             RefreshConnectionList();
@@ -327,12 +325,6 @@ namespace SmbManager
                 }
 
                 CheckApplicationIntegrity();
-                if (_startWithWindows && IsStartupLaunch())
-                {
-                    HideToTray();
-                    BeginStartupReconnect();
-                }
-
                 CheckForUpdatesOnStartup();
             };
         }
@@ -1741,86 +1733,6 @@ namespace SmbManager
             }
         }
 
-        private void BeginStartupReconnect()
-        {
-            var timer = new System.Windows.Forms.Timer { Interval = 20000 };
-            timer.Tick += delegate
-            {
-                timer.Stop();
-                timer.Dispose();
-                var department = GetDepartmentByLabel(_lastDepartmentLabel);
-                string savedPassword;
-                if (department == null || !TryLoadSavedPassword(_lastDepartmentLabel, out savedPassword))
-                {
-                    AppendResultLog("확인: Windows 시작 자동 연결 생략 / 저장 비밀번호 없음");
-                    SetMonitorStatus("저장 비밀번호 없어 자동 연결 생략");
-                    return;
-                }
-
-                SetMonitorStatus("Windows 시작 연결 확인 중");
-                var worker = new System.ComponentModel.BackgroundWorker();
-                worker.DoWork += delegate(object sender, System.ComponentModel.DoWorkEventArgs e)
-                {
-                    e.Result = TryReconnectWithSavedPassword(department, savedPassword);
-                };
-                worker.RunWorkerCompleted += delegate(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-                {
-                    if (e.Error != null)
-                    {
-                        AppendResultLog("실패: Windows 시작 자동 연결 / " + e.Error.Message);
-                        SetMonitorStatus("자동 연결 실패");
-                        return;
-                    }
-
-                    var result = e.Result as ReconnectResult;
-                    AppendResultLog((result != null && result.Success ? "성공: " : "주의: ") + "Windows 시작 자동 연결 / " + (result == null ? "결과 없음" : result.Message));
-                    SetMonitorStatus(result != null && result.Success ? "자동 연결 완료" : "자동 연결 확인 필요");
-                    RefreshConnectionList();
-                    RefreshSecuritySummary();
-                };
-                worker.RunWorkerAsync();
-            };
-            timer.Start();
-        }
-
-        private bool IsStartupLaunch()
-        {
-            return Environment.GetCommandLineArgs()
-                .Skip(1)
-                .Any(argument => string.Equals(argument, "--startup", StringComparison.OrdinalIgnoreCase));
-        }
-
-        private void EnsureStartupShortcut()
-        {
-            var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
-            if (!_startWithWindows)
-            {
-                TryDeleteFile(shortcutPath);
-                return;
-            }
-
-            try
-            {
-                var shellType = Type.GetTypeFromProgID("WScript.Shell");
-                if (shellType == null)
-                {
-                    return;
-                }
-                Directory.CreateDirectory(Path.GetDirectoryName(shortcutPath));
-                var shell = Activator.CreateInstance(shellType);
-                var shortcut = shellType.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { shortcutPath });
-                var shortcutType = shortcut.GetType();
-                shortcutType.InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { Application.ExecutablePath });
-                shortcutType.InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { AppDomain.CurrentDomain.BaseDirectory });
-                shortcutType.InvokeMember("Arguments", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "--startup" });
-                shortcutType.InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SMB Manager connection restore" });
-                shortcutType.InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
-            }
-            catch (Exception error)
-            {
-                AppendResultLog("실패: 시작프로그램 바로가기 설정 / " + error.Message);
-            }
-        }
 
         private void InspectFirewall()
         {
@@ -2534,7 +2446,7 @@ namespace SmbManager
                     return;
                 }
 
-                var shortcutPath = Path.Combine(desktop, ShortcutName);
+                var shortcutPath = Path.Combine(desktop, "SMB Manager.lnk");
                 var shellType = Type.GetTypeFromProgID("WScript.Shell");
                 if (shellType == null)
                 {
@@ -2717,7 +2629,7 @@ namespace SmbManager
 
         private void OpenGeneralSettings()
         {
-            using (var form = new AdminSettingsForm(_serverHost, _folders, _departments, _automaticUpdate, _connectionMonitorEnabled, _connectionMonitorIntervalSeconds, false, _startWithWindows))
+            using (var form = new AdminSettingsForm(_serverHost, _folders, _departments, _automaticUpdate, _connectionMonitorEnabled, _connectionMonitorIntervalSeconds, false))
             {
                 if (form.ShowDialog(this) != DialogResult.OK)
                 {
@@ -2728,7 +2640,6 @@ namespace SmbManager
                 _automaticUpdate = form.AutomaticUpdate;
                 _connectionMonitorEnabled = form.ConnectionMonitorEnabled;
                 _connectionMonitorIntervalSeconds = form.ConnectionMonitorIntervalSeconds;
-                _startWithWindows = form.StartWithWindows;
                 for (var i = 0; i < _folders.Count; i++)
                 {
                     _folders[i].Drive = form.Drives[i];
@@ -2738,8 +2649,7 @@ namespace SmbManager
                 SaveSettings();
                 RefreshConnectionList();
                 ConfigureConnectionMonitor();
-                EnsureStartupShortcut();
-                AppendResultLog("성공: 일반 설정 변경 / 서버 " + _serverHost + ", Windows 시작 " + (_startWithWindows ? "사용" : "사용 안 함"));
+                AppendResultLog("성공: 일반 설정 변경 / 서버 " + _serverHost);
                 Log("일반 설정을 저장했습니다.");
             }
         }
@@ -2753,7 +2663,7 @@ namespace SmbManager
 
             try
             {
-                using (var form = new AdminSettingsForm(_serverHost, _folders, _departments, _automaticUpdate, _connectionMonitorEnabled, _connectionMonitorIntervalSeconds, true, _startWithWindows))
+                using (var form = new AdminSettingsForm(_serverHost, _folders, _departments, _automaticUpdate, _connectionMonitorEnabled, _connectionMonitorIntervalSeconds, true))
                 {
                     if (form.ShowDialog(this) != DialogResult.OK)
                     {
@@ -2771,10 +2681,8 @@ namespace SmbManager
                         SetAdminPassword(form.NewAdminPassword);
                     }
 
-                    _startWithWindows = form.StartWithWindows;
                     SaveSettings();
-                    EnsureStartupShortcut();
-                    AppendResultLog("성공: 보안 설정 변경 / SMB 계정 및 Windows 시작 " + (_startWithWindows ? "사용" : "사용 안 함"));
+                    AppendResultLog("성공: 보안 설정 변경 / SMB 계정");
                     Log("보안 설정을 저장했습니다.");
                 }
             }
@@ -2864,7 +2772,6 @@ namespace SmbManager
 
         private void LoadSettings()
         {
-            var hasStartWithWindowsSetting = false;
             if (!File.Exists(_settingsPath))
             {
                 return;
@@ -2903,11 +2810,6 @@ namespace SmbManager
                     {
                         _connectionMonitorIntervalSeconds = Math.Max(15, Math.Min(3600, seconds));
                     }
-                }
-                else if (key == "StartWithWindows")
-                {
-                    hasStartWithWindowsSetting = true;
-                    _startWithWindows = IsTruthy(value, false);
                 }
                 else if (key == "AdminPasswordSalt")
                 {
@@ -2968,15 +2870,6 @@ namespace SmbManager
                 }
             }
 
-            if (!hasStartWithWindowsSetting)
-            {
-                var startupShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
-                if (File.Exists(startupShortcut))
-                {
-                    _startWithWindows = true;
-                    _settingsMigrated = true;
-                }
-            }
 
             if (_settingsMigrated)
             {
@@ -2994,7 +2887,6 @@ namespace SmbManager
                 writer.WriteLine("AutomaticUpdate=" + _automaticUpdate);
                 writer.WriteLine("ConnectionMonitorEnabled=" + _connectionMonitorEnabled);
                 writer.WriteLine("ConnectionMonitorIntervalSeconds=" + _connectionMonitorIntervalSeconds);
-                writer.WriteLine("StartWithWindows=" + _startWithWindows);
                 writer.WriteLine("AdminPasswordSalt=" + _adminPasswordSalt);
                 writer.WriteLine("AdminPasswordHash=" + _adminPasswordHash);
                 writer.WriteLine("AdminPasswordIterations=" + _adminPasswordIterations);
@@ -3460,7 +3352,6 @@ namespace SmbManager
         private TextBox _serverBox;
         private CheckBox _automaticUpdateBox;
         private CheckBox _monitorEnabledBox;
-        private CheckBox _startWithWindowsBox;
         private NumericUpDown _monitorIntervalBox;
         private TextBox _newAdminPasswordBox;
         private TextBox _confirmAdminPasswordBox;
@@ -3470,14 +3361,12 @@ namespace SmbManager
         private readonly List<FolderMapping> _folders;
         private readonly List<Department> _departments;
         private readonly bool _securityMode;
-        private readonly bool _startWithWindows;
 
-        public AdminSettingsForm(string serverHost, List<FolderMapping> folders, List<Department> departments, bool automaticUpdate, bool monitorEnabled, int monitorIntervalSeconds, bool securityMode, bool startWithWindows)
+        public AdminSettingsForm(string serverHost, List<FolderMapping> folders, List<Department> departments, bool automaticUpdate, bool monitorEnabled, int monitorIntervalSeconds, bool securityMode)
         {
             _folders = folders;
             _departments = departments;
             _securityMode = securityMode;
-            _startWithWindows = startWithWindows;
             Text = securityMode ? "보안 설정" : "일반 설정";
             StartPosition = FormStartPosition.CenterParent;
             Size = new Size(560, 520);
@@ -3646,14 +3535,6 @@ namespace SmbManager
             _confirmAdminPasswordBox = new TextBox { Dock = DockStyle.Fill, UseSystemPasswordChar = true };
             layout.Controls.Add(_confirmAdminPasswordBox, 1, 1);
 
-            _startWithWindowsBox = new CheckBox
-            {
-                Text = "Windows 로그인 후 저장된 비밀번호로 자동 연결",
-                AutoSize = true,
-                Checked = _startWithWindows
-            };
-            layout.Controls.Add(new Label { Text = "재부팅 복구", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft }, 0, 2);
-            layout.Controls.Add(_startWithWindowsBox, 1, 2);
 
             var hint = new Label
             {
@@ -3692,10 +3573,6 @@ namespace SmbManager
             get { return _newAdminPasswordBox == null ? string.Empty : _newAdminPasswordBox.Text; }
         }
 
-        public bool StartWithWindows
-        {
-            get { return _startWithWindowsBox != null && _startWithWindowsBox.Checked; }
-        }
 
         public bool AutomaticUpdate
         {

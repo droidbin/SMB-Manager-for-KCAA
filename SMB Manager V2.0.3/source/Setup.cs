@@ -136,7 +136,6 @@ namespace SmbManagerSetup
             private readonly string _sourceAppPath;
             private readonly CheckBox _desktopShortcutBox;
             private readonly CheckBox _startMenuShortcutBox;
-        private readonly CheckBox _startupShortcutBox;
             private readonly CheckBox _launchAfterInstallBox;
             private readonly TextBox _logBox;
             private readonly Button _installButton;
@@ -205,11 +204,9 @@ namespace SmbManagerSetup
                 var optionLayout = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false };
                 _desktopShortcutBox = new CheckBox { Text = "Create desktop shortcut", AutoSize = true, Checked = true };
                 _startMenuShortcutBox = new CheckBox { Text = "Create Start Menu shortcut", AutoSize = true, Checked = true };
-                _startupShortcutBox = new CheckBox { Text = "Start SMB Manager with Windows", AutoSize = true, Checked = false };
                 _launchAfterInstallBox = new CheckBox { Text = "Launch after install", AutoSize = true, Checked = true };
                 optionLayout.Controls.Add(_desktopShortcutBox);
                 optionLayout.Controls.Add(_startMenuShortcutBox);
-                optionLayout.Controls.Add(_startupShortcutBox);
                 optionLayout.Controls.Add(_launchAfterInstallBox);
                 optionPanel.Controls.Add(optionLayout);
                 root.Controls.Add(optionPanel, 0, 2);
@@ -297,11 +294,7 @@ namespace SmbManagerSetup
                     }
 
                     var startupPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
-                    if (_startupShortcutBox.Checked)
-                    {
-                        CreateShortcut(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName, installedAppPath, installDir, SetupProgram.ProductName + " Startup", "--startup");
-                    }
-                    else if (File.Exists(startupPath))
+                    if (File.Exists(startupPath))
                     {
                         File.Delete(startupPath);
                     }
