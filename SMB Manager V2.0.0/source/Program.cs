@@ -293,7 +293,7 @@ namespace SmbManager
         public MainForm()
         {
             Text = AppTitle;
-            MinimumSize = new Size(860, 620);
+            MinimumSize = new Size(700, 520);
             Size = new Size(980, 700);
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = Color.FromArgb(243, 243, 243);
@@ -344,7 +344,7 @@ namespace SmbManager
                 Dock = DockStyle.Fill,
                 Padding = new Padding(16),
                 ColumnCount = 1,
-                RowCount = 4
+                RowCount = 5
             };
             _rootLayout = root;
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
@@ -501,14 +501,15 @@ namespace SmbManager
 
             if (_rootLayout != null)
             {
-                var compact = ClientSize.Width < 900;
-                _rootLayout.RowStyles[1].Height = compact ? 210 : 150;
-                _rootLayout.RowStyles[4].Height = compact ? 128 : 106;
+                var compact = ClientSize.Width < 940;
+                _rootLayout.RowStyles[1].Height = compact ? 190 : 150;
+                _rootLayout.RowStyles[2].Height = compact ? 76 : 82;
+                _rootLayout.RowStyles[4].Height = compact ? 96 : 106;
             }
 
             if (_mainSplit != null && _mainSplit.Width > 80 && _mainSplit.Height > 80)
             {
-                if (ClientSize.Width < 900)
+                if (ClientSize.Width < 940)
                 {
                     _mainSplit.Orientation = Orientation.Horizontal;
                     SetSafeSplitterDistance(_mainSplit, Math.Max(210, (_mainSplit.Height * 58) / 100));
