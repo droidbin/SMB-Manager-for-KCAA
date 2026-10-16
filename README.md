@@ -73,7 +73,7 @@ zip 파일을 내려받아 압축을 해제한 뒤 `Setup.exe`를 실행하면 �
 빌드:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File ".\SMB Manager V1.7.7\source\build.ps1"
+powershell -ExecutionPolicy Bypass -File ".\SMB Manager V1.7.8\source\build.ps1"
 ```
 
 빌드 결과:
@@ -83,9 +83,13 @@ powershell -ExecutionPolicy Bypass -File ".\SMB Manager V1.7.7\source\build.ps1"
 - `SMB Manager Vx.x.x\Uninstall.exe`
 - `SMB Manager Vx.x.x.zip`
 
+## V1.7.8 변경 사항
+
+- 유효한 설치 표식이 없는 압축 해제본은 포터블 실행하지 않고 설치 프로그램으로 전환
+
 ## 현재 버전
 
-현재 최신 버전은 `V1.7.7`입니다.
+현재 최신 버전은 `V1.7.8`입니다.
 
 주요 변경:
 

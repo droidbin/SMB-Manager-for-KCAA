@@ -240,9 +240,9 @@ namespace SmbManager
 
     internal sealed class MainForm : Form
     {
-        private const string AppTitle = "SMB Manager V1.7.7";
+        private const string AppTitle = "SMB Manager V1.7.8";
         private const string DefaultServerHost = "192.168.1.65";
-        private const string CurrentVersionText = "V1.7.7";
+        private const string CurrentVersionText = "V1.7.8";
         private const int AdminPasswordIterations = 120000;
         private const string UpdateApiUrl = "https://api.github.com/repos/droidbin/smb-manager/releases/latest";
         private const string UpdateRepositoryUrl = "https://github.com/droidbin/smb-manager/releases/latest";
@@ -2001,14 +2001,39 @@ namespace SmbManager
                     return true;
                 }
 
-                var hasInstallMarker = File.Exists(Path.Combine(currentDir, "install-info.ini"));
-                var hasSetupPackage = File.Exists(Path.Combine(currentDir, "Setup.exe"));
-                return !hasInstallMarker && !hasSetupPackage;
+                return !HasValidInstallInfo(currentDir);
             }
             catch
             {
                 return true;
             }
+        }
+
+        private static bool HasValidInstallInfo(string appDirectory)
+        {
+            var infoPath = Path.Combine(appDirectory, "install-info.ini");
+            if (!File.Exists(infoPath))
+            {
+                return false;
+            }
+
+            string product = null;
+            string installDir = null;
+            foreach (var line in File.ReadAllLines(infoPath, Encoding.UTF8))
+            {
+                if (line.StartsWith("Product=", StringComparison.OrdinalIgnoreCase))
+                {
+                    product = line.Substring("Product=".Length).Trim();
+                }
+                else if (line.StartsWith("InstallDir=", StringComparison.OrdinalIgnoreCase))
+                {
+                    installDir = line.Substring("InstallDir=".Length).Trim();
+                }
+            }
+
+            return string.Equals(product, "SMB Manager", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrWhiteSpace(installDir)
+                && string.Equals(NormalizeDirectoryPath(installDir), NormalizeDirectoryPath(appDirectory), StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool EmbeddedFileMatches(string resourceName, string filePath)
