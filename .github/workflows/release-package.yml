@@ -27,7 +27,10 @@ jobs:
         run: |
           $versionFiles = Get-ChildItem -Path . -Recurse -Filter version.ini |
             Where-Object { $_.FullName -match 'SMB Manager V[^/\\]+[/\\]version\.ini$' } |
-            Sort-Object FullName -Descending
+            Sort-Object @{ Expression = {
+                $match = [regex]::Match($_.Directory.Name, 'V(\d+\.\d+\.\d+)')
+                if ($match.Success) { [version]$match.Groups[1].Value } else { [version]'0.0.0' }
+              }; Descending = $true }, @{ Expression = { $_.Directory.Name -notmatch '-' }; Descending = $true }
 
           if (-not $versionFiles) {
             throw "No version.ini file found under an SMB Manager version folder."
