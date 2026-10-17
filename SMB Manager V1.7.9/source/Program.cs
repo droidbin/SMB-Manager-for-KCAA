@@ -2330,7 +2330,8 @@ namespace SmbManager
                 var version = "V" + tag.TrimStart('v', 'V');
                 var expectedName = "SMB Manager " + version + ".zip";
                 var asset = (item.assets ?? new GitHubAssetPayload[0]).FirstOrDefault(a => a != null
-                    && string.Equals(a.name, expectedName, StringComparison.OrdinalIgnoreCase)
+                    && (string.Equals(a.name, expectedName, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(a.name, expectedName.Replace(' ', '.'), StringComparison.OrdinalIgnoreCase))
                     && !string.IsNullOrWhiteSpace(a.browser_download_url));
                 if (asset == null) continue;
                 if (latest == null || CompareVersionText(version, latest.Version) > 0)
