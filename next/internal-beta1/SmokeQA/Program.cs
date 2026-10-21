@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
 using SmbManager.Local;
 using SmbManager.Local.Client;
 
 if(args.Contains("--review-regression")){await ReviewRegression.Run(args);return;}
+if(args.Contains("--admin-isolation-qa")){AdminInstallerIsolationQA.Run(args);return;}
 if(args.Contains("--installer-reset-qa")){InstallerResetQA.Run(args);return;}
 if(args.Contains("--account-update-qa")){await AccountUpdateQA.Run(args);return;}
 if(args.Contains("--native-smb-qa")){await NativeWorkflowSmb.Run(args);return;}

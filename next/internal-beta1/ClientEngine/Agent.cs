@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using SmbManager.Local;
 
 namespace SmbManager.Local.Client;
@@ -159,7 +159,7 @@ public sealed partial class ClientAgent : IDisposable
         Identity = identity; stateDir = directory; SessionId = sessionId;
         http = Wire.Http(identity.Url, device: identity.DeviceKey);
         executor = new(directory);
-        real = new(securityStateDir); real.EnableManagedMode();
+        real = new(securityStateDir); real.EnableManagedMode();real.SetManagementPaused(false);
         if (executor.Quarantined && !real.Quarantined) real.LatchQuarantine("이전 격리 기록 복원", executor.IncidentId);
         if (real.Quarantined) executor.Quarantine("영속 격리 잠금 복원", real.IncidentId);
         current = new(identity.DeviceId, name, "Starting", "등록 및 승인 상태 확인 중", executor.Profiles, executor.Completed, DateTimeOffset.UtcNow);

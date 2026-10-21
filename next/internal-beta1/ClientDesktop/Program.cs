@@ -15,16 +15,16 @@ internal static class Program
         try
         {
             Directory.CreateDirectory(stateDir);
-            using var instanceLock = new FileStream(Path.Combine(stateDir,"client.lock"),FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None);
             if(args.Contains("--complete-install"))
             {
                 SecretFile.PrivateDirectory(stateDir);
-                var result=InstallCompletion.Run(Wire.Arg(args,"--install-user-sid",""));
+                var result=InstallerClientGate.Complete(stateDir,Wire.Arg(args,"--install-user-sid",""));
                 Wire.Save(Path.Combine(stateDir,"install-completion.json"),result);
                 Environment.ExitCode=result.Completed?0:2;
                 if(!result.Completed && int.TryParse(Wire.Arg(args,"--install-ui-level","2"),out var level) && level>=3)MessageBox.Show(result.Message,"SMB Manager 설치 마무리",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                 return;
             }
+            using var instanceLock = new FileStream(Path.Combine(stateDir,"client.lock"),FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None);
             if (args.Contains("--headless"))
             {
                 using var agent = ClientAgent.Create(Wire.Load<ClientBootstrap>(bootstrapFile), stateDir, securityStateDir: policyDir).GetAwaiter().GetResult();
@@ -64,7 +64,7 @@ internal sealed class ClientForm : Form
     private readonly Label connectionHint=UiTheme.Hint("");
     private readonly Label unread=UiTheme.Hint("회사 알림");
     private readonly ListView connections=new(){Visible=false,Dock=DockStyle.Fill,View=View.Details,FullRowSelect=true,MultiSelect=false,ShowItemToolTips=true};
-    private readonly TextBox notifications=new(){Dock=DockStyle.Fill,ReadOnly=true,Multiline=true,ScrollBars=ScrollBars.Vertical,BackColor=Color.FromArgb(17,24,39),ForeColor=Color.FromArgb(209,213,219),BorderStyle=BorderStyle.None};
+    private readonly TextBox notifications=new(){Dock=DockStyle.Fill,ReadOnly=true,Multiline=true,ScrollBars=ScrollBars.Vertical,BackColor=Color.FromArgb(17,24,39),ForeColor=Color.FromArgb(209,213,219),BorderStyle=BorderStyle.FixedSingle,Font=UiTheme.Font(11)};
     private readonly Button register=new(){Text="등록 요청"};
     private readonly Button checkServer=new(){Text="서버 연결 다시 확인"};
     private readonly Button reconnect=new(){Text="다시 연결",Enabled=false};
@@ -84,9 +84,9 @@ internal sealed class ClientForm : Form
     private string Address=>url.SelectedItem is ServerChoice server&&url.Text==server.Label?server.Address:url.Text.Trim();
     public ClientForm(string bootstrapFile,string directory,string policyDirectory,bool migrateLegacy=false){
         stateDir=directory;policyDir=policyDirectory;snapshotMode=!migrateLegacy;
-        Text="SMB Manager · 베타 3 · 빌드 11";UiTheme.Form(this,new(800,820),new(660,650));
-        var root=UiTheme.ScrollingRoot(this,4,620);
-        root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,100));root.RowStyles.Add(new(SizeType.Absolute,130));
+        Text="SMB Manager · 베타 4 · 빌드 13";UiTheme.Form(this,new(900,960),new(740,760));
+        var root=UiTheme.ScrollingRoot(this,4,820);
+        root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,42));root.RowStyles.Add(new(SizeType.Percent,58));
         var header=new TableLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,ColumnCount=2,Padding=new(14),BackColor=Color.White,Margin=new(0,0,0,10)};
         header.RowCount=2;header.RowStyles.Add(new(SizeType.AutoSize));header.RowStyles.Add(new(SizeType.AutoSize));
         header.ColumnStyles.Add(new(SizeType.Percent,100));header.ColumnStyles.Add(new(SizeType.AutoSize));
@@ -115,9 +115,10 @@ internal sealed class ClientForm : Form
         body.Controls.Add(connectionHint,0,1);UiTheme.Wrap(connectionHint,body);UiTheme.Wrap(empty,listPanel);
         var actions=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true};UiTheme.Button(open,true);UiTheme.Button(reconnect);actions.Controls.Add(open);actions.Controls.Add(reconnect);
         var explorer=new Button{Text="파일 탐색기 열기"};UiTheme.Button(explorer);actions.Controls.Add(explorer);explorer.Click+=(_,_)=>{try{System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe"){UseShellExecute=true});}catch(Exception e){connectionHint.Text=UiTheme.Error(e);}};
-        body.Controls.Add(actions,0,2);var folderCard=UiTheme.Card("내 공유폴더",body);folderCard.MinimumSize=new(0,230);root.Controls.Add(folderCard,0,2);
-        var notificationPanel=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=2,RowCount=2};notificationPanel.ColumnStyles.Add(new(SizeType.Percent,100));notificationPanel.ColumnStyles.Add(new(SizeType.AutoSize));notificationPanel.RowStyles.Add(new(SizeType.AutoSize));notificationPanel.RowStyles.Add(new(SizeType.Percent,100));
-        notificationPanel.Controls.Add(unread,0,0);var markRead=new Button{Text="읽음 표시"};UiTheme.Button(markRead);notificationPanel.Controls.Add(markRead,1,0);notificationPanel.Controls.Add(notifications,0,1);notificationPanel.SetColumnSpan(notifications,2);notifications.Text="받은 알림이 없습니다.";root.Controls.Add(UiTheme.Card("회사 알림",notificationPanel),0,3);
+        body.Controls.Add(actions,0,2);var folderCard=UiTheme.Card("내 공유폴더",body);folderCard.MinimumSize=new(0,210);root.Controls.Add(folderCard,0,2);
+        var notificationPanel=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=3,RowCount=2};notificationPanel.ColumnStyles.Add(new(SizeType.Percent,100));notificationPanel.ColumnStyles.Add(new(SizeType.AutoSize));notificationPanel.ColumnStyles.Add(new(SizeType.AutoSize));notificationPanel.RowStyles.Add(new(SizeType.AutoSize));notificationPanel.RowStyles.Add(new(SizeType.Percent,100));
+        notificationPanel.Controls.Add(unread,0,0);var markRead=new Button{Text="모두 확인"};UiTheme.Button(markRead);notificationPanel.Controls.Add(markRead,2,0);notificationPanel.Controls.Add(notifications,0,1);notificationPanel.SetColumnSpan(notifications,3);notifications.Text="받은 알림이 없습니다.";var notificationCard=UiTheme.Card("회사 알림",notificationPanel);notificationCard.MinimumSize=new(0,260);root.Controls.Add(notificationCard,0,3);
+        var expandNotifications=new Button{Text="크게 보기"};UiTheme.Button(expandNotifications);notificationPanel.Controls.Add(expandNotifications,1,0);expandNotifications.Click+=(_,_)=>ShowNotificationHistory();
         markRead.Click+=(_,_)=>{if(agent is null)return;lastReadId=agent.NotificationEntries.LastOrDefault()?.Id??"";try{SecretFile.Save(Path.Combine(stateDir,"ui-preferences.protected"),new Preferences(lastReadId,lastAnnounced));}catch(Exception e){hint.Text=UiTheme.Error(e);}UpdateScreen();};
         tray.Icon=Icon;tray.Text="SMB Manager";var menu=new ContextMenuStrip();menu.Items.Add("화면 열기",null,(_,_)=>ShowWindow());menu.Items.Add("앱 완전히 종료",null,(_,_)=>ExitApplication());tray.ContextMenuStrip=menu;tray.DoubleClick+=(_,_)=>ShowWindow();tray.BalloonTipClicked+=(_,_)=>ShowWindow();
         register.Click+=async(_,_)=>{if(registering||legacyBusy)return;if(legacyPending&&!await RemoveLegacy())return;await Register();};
@@ -157,12 +158,12 @@ internal sealed class ClientForm : Form
         who.Text=$"{(person.Length>0?person:"성명 확인 중")} · 요청 부서: {(requested.Length>0?requested:info is null?"확인 중":"이전 등록 · 요청 기록 없음")} · 배정 부서: {(info?.Department is {Length:>0}?info.Department:"준비 중")}"+(info?.Correction is not null?"\n등록 정보 정정 요청이 접수되어 있습니다.":"");
         var reports=agent.ConnectionReports.Where(c=>c.ProfileId.Length>0).ToArray();
         var allConnected=policy is {Profiles.Length:>0}&&reports.Length==policy.Profiles.Length&&reports.All(c=>c.ConnectionState=="Connected"&&c.AssignmentState=="연결됨");
-        summary.Text=info?.Archived==true?"등록이 보관된 PC입니다. 서버관리자에게 문의하세요.":agent.Quarantined?"보호를 위해 연결이 잠겼습니다 — 서버관리자에게 문의하세요":current.Phase=="WaitingApproval"?"관리자 승인 대기 — 추가 입력 없이 기다리면 자동으로 진행됩니다":current.Phase=="Offline"?"회사 관리 서버 연결 확인 필요 — 아래 폴더 상태도 함께 확인하세요":policy is null?"폴더 배정 정보 확인 중":policy.Profiles.Length==0?"폴더 배정 대기 — 서버관리자가 공유폴더를 준비하고 있습니다":allConnected?"공유폴더 연결 완료 — 폴더를 선택해 열 수 있습니다":"공유폴더 연결 확인 중 — 일부 폴더는 추가 확인이 필요합니다";
+        summary.Text=info?.Archived==true?"등록이 보관된 PC입니다. 서버관리자에게 문의하세요.":agent.Quarantined?"보호를 위해 연결이 잠겼습니다 — 서버관리자에게 문의하세요":current.Phase=="WaitingApproval"?"관리자 승인 대기 — 추가 입력 없이 기다리면 자동으로 진행됩니다":current.Phase=="Offline"?"회사 관리 서버 연결 확인 필요 — 아래 폴더 상태도 함께 확인하세요":policy is null?"내 폴더를 확인하고 있습니다. 잠시만 기다려 주세요.":policy.ConnectionsHeld?"관리자가 연결을 잠시 중지했습니다. 관리자에게 문의하세요.":policy.Profiles.Length==0?"폴더 배정 대기 — 서버관리자가 공유폴더를 준비하고 있습니다":allConnected?"공유폴더 연결 완료 — 폴더를 선택해 열 수 있습니다":reports.Any(r=>r.ConnectionState=="AuthenticationRequired")?"회사 폴더 계정 확인이 필요합니다. 관리자에게 알려 주세요.":"폴더를 자동으로 연결하고 있습니다. 잠시만 기다려 주세요.";
         empty.Text=current.Phase=="WaitingApproval"?"관리자가 등록을 승인하면 폴더가 자동으로 나타납니다. 회사 서버관리자에게 성명과 요청 부서를 알려주세요.":"배정된 공유폴더를 아직 확인하지 못했습니다. 회사 서버관리자에게 배정 상태를 문의하세요.";
         empty.Visible=reports.Length==0;connections.Visible=reports.Length>0;
         reconnect.Enabled=!reconnecting&&!agent.Quarantined&&policy is {Profiles.Length:>0}&&current.Phase is not ("WaitingApproval" or "Offline" or "Starting");reconnect.Text=reconnecting?"다시 연결 중…":"다시 연결";
         var signature=System.Text.Json.JsonSerializer.Serialize(reports,Wire.Json)+string.Join("|",policy?.Profiles.Select(p=>p.Name)??[]);
-        if(signature!=lastRows){var selected=connections.SelectedItems.Count>0?connections.SelectedItems[0].Tag as ConnectionReport:null;connections.BeginUpdate();connections.Items.Clear();foreach(var c in reports){var label=policy?.Profiles.FirstOrDefault(p=>p.Id==c.ProfileId)?.Name??c.Unc;var row=new ListViewItem(new[]{label,c.Drive,c.AssignmentState}){Tag=c,ToolTipText=c.Unc};connections.Items.Add(row);if(selected?.ProfileId==c.ProfileId)row.Selected=true;}connections.EndUpdate();lastRows=signature;ResizeColumns();}
+        if(signature!=lastRows){var selected=connections.SelectedItems.Count>0?connections.SelectedItems[0].Tag as ConnectionReport:null;connections.BeginUpdate();connections.Items.Clear();foreach(var c in reports){var label=policy?.Profiles.FirstOrDefault(p=>p.Id==c.ProfileId)?.Name??c.Unc;var row=new ListViewItem(new[]{label,c.Drive,c.AssignmentState}){Tag=c,ToolTipText=c.Unc};connections.Items.Add(row);if(selected?.ProfileId==c.ProfileId)row.Selected=true;}if(connections.SelectedItems.Count==0){var first=connections.Items.Cast<ListViewItem>().FirstOrDefault(row=>row.Tag is ConnectionReport report&&report.ConnectionState=="Connected");if(first is not null)first.Selected=true;}connections.EndUpdate();lastRows=signature;ResizeColumns();}
         UpdateOpen();
         var entries=agent.NotificationEntries;var entriesSignature=string.Join("|",entries.Select(e=>e.Id));
         if(entriesSignature!=lastNotifications){notifications.Text=entries.Length>0?string.Join("\r\n\r\n",entries.Reverse().Select(e=>$"{e.ReceivedAt.ToLocalTime():MM/dd HH:mm}\r\n{e.Text}")):current.Notifications is {Length:>0}?string.Join("\r\n\r\n",current.Notifications.Reverse()):"받은 알림이 없습니다.";lastNotifications=entriesSignature;}
@@ -179,6 +180,11 @@ internal sealed class ClientForm : Form
             lastAnnounced=newest;SaveNotificationPreferences();
         }
         if(!snapshotMode)tray.Visible=true;
+    }
+    private void ShowNotificationHistory(){
+        if(agent is null||agent.NotificationEntries.Length==0){MessageBox.Show(this,"받은 회사 알림이 아직 없습니다.","회사 알림",MessageBoxButtons.OK,MessageBoxIcon.Information);return;}
+        if(notificationPopup is null||notificationPopup.IsDisposed){notificationPopup=new CompanyNotificationForm();notificationPopup.ReadConfirmed+=id=>{lastReadId=id;SaveNotificationPreferences();UpdateScreen();};}
+        notificationPopup.SetEntries(agent.NotificationEntries);if(!notificationPopup.Visible)notificationPopup.Show();notificationPopup.WindowState=FormWindowState.Normal;notificationPopup.Activate();
     }
     private void SaveNotificationPreferences(){try{SecretFile.Save(Path.Combine(stateDir,"ui-preferences.protected"),new Preferences(lastReadId,lastAnnounced));}catch{hint.Text="알림 확인 상태를 저장하지 못했습니다. 다음 실행에 다시 표시될 수 있습니다.";}}
     private bool CanOpen(ConnectionReport row)=>agent is not null&&!agent.Quarantined&&!agent.Paused&&ConnectionRules.CanOpen(row,agent.Policy,DateTimeOffset.UtcNow);
@@ -206,7 +212,7 @@ internal sealed class ClientForm : Form
         if(agent is not null||registering)return;
         if(!existing&&code.Length==0){if(department.SelectedItem is null){hint.Text="부서를 먼저 선택하세요.";department.Focus();return;}if(string.IsNullOrWhiteSpace(name.Text)){hint.Text="성명을 입력하세요. 예: 홍길동";name.Focus();return;}if(!snapshotMode&&MessageBox.Show(this,$"성명: {name.Text.Trim()}\n요청 부서: {department.Text}\n\n이 정보로 등록을 요청할까요?", "등록 정보 확인",MessageBoxButtons.YesNo,MessageBoxIcon.Question)!=DialogResult.Yes)return;}
         registering=true;UpdateScreen();
-        try{StartupStatus("Connecting");agent=await ClientAgent.Create(new(Address,code,name.Text.Trim(),department.Text),stateDir,stop.Token,policyDir);worker=Task.Run(()=>agent.Run(stop.Token));StartupStatus("AgentRunning");hint.Text="앱 실행 중 승인·배정·연결 상태를 자동 확인합니다. 창을 닫아도 계속 실행되며 완전 종료는 알림 영역 아이콘 메뉴에서 선택합니다.";try{await agent.RefreshRegistration(stop.Token);}catch{}UpdateScreen();}
+        try{StartupStatus("Connecting");agent=await ClientAgent.Create(new(Address,code,name.Text.Trim(),department.Text),stateDir,stop.Token,policyDir);worker=Task.Run(()=>agent.Run(stop.Token));StartupStatus("AgentRunning");hint.Text="앱을 켜면 배정된 폴더를 자동으로 연결합니다. 연결 완료 후 폴더를 선택해 여세요. 창을 닫아도 연결을 계속 확인합니다.";try{await agent.RefreshRegistration(stop.Token);}catch{}UpdateScreen();}
         catch(Exception e){StartupStatus("RegistrationFailed",e);hint.Text=UiTheme.Error(e);}
         finally{registering=false;UpdateScreen();}
     }

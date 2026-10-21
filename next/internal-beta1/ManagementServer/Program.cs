@@ -163,7 +163,7 @@ sealed partial class Store
             var d = devices[id]; if(!d.Approved) return Results.StatusCode(403);
             var a = assignments.GetValueOrDefault(id);
             var allowed = profiles.Where(p=>Allows(id,p)).ToArray(); if(allowed.Select(p=>p.Drive).Distinct().Count()!=allowed.Length)return Results.Conflict(new{error="DRIVE_CONFLICT"});
-            var policy = new DepartmentPolicy(id,d.SessionId,policyRevision,a?.Department ?? "",a?.ExpectedAccount ?? "",allowed,a?.Reconnect ?? false,!d.ConnectionsHeld && (a?.ForceDisconnect ?? false),!d.ConnectionsHeld && (a?.ResumeStopped ?? false),Now,Now.AddSeconds(30),a?.Revision ?? 0, allowed.Select(p=>new ProfileAccount(p.Id,GetAccount(a!,p.Id))).ToArray(), a?.AccessRole ?? "직원");
+            var policy = new DepartmentPolicy(id,d.SessionId,policyRevision,a?.Department ?? "",a?.ExpectedAccount ?? "",allowed,a?.Reconnect ?? false,!d.ConnectionsHeld && (a?.ForceDisconnect ?? false),!d.ConnectionsHeld && (a?.ResumeStopped ?? false),Now,Now.AddSeconds(30),a?.Revision ?? 0, allowed.Select(p=>new ProfileAccount(p.Id,GetAccount(a!,p.Id))).ToArray(), a?.AccessRole ?? "직원",d.ConnectionsHeld);
             return Results.Ok(new PolicyEnvelope(policy,AssignmentRules.Sign(signing,policy)));
         }
     }

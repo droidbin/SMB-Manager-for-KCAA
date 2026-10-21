@@ -54,7 +54,7 @@ internal sealed class AdminForm : Form
     private string lastRows="",lastJobs="",lastAudit="";
     public AdminForm(ServerReady ready,bool snapshot=false){
         snapshotMode=snapshot;http=Wire.Http(ready.Url,admin:ready.AdminKey);
-        Text="SMB Manager 서버관리자 · 베타 3 · 빌드 11";UiTheme.Form(this,new(1220,920),new(1000,760));
+        Text="SMB Manager 서버관리자 · 베타 4 · 빌드 13";UiTheme.Form(this,new(1220,920),new(1000,760));
         var root=UiTheme.ScrollingRoot(this,4,960);root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,100));root.RowStyles.Add(new(SizeType.Absolute,100));
         root.Controls.Add(UiTheme.Header("서버관리자",summary,Close),0,0);
         var toolbar=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true};

@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
@@ -19,6 +19,25 @@ internal static class ReviewRegression
         var p=new Profile("review-share","QA","Real",1,@"\\192.0.2.250\review",drive,"운영부");
         DepartmentPolicy Policy(int revision=1,int assignment=1,bool reconnect=true,string account=@"QA\old")=>new("qa","qa",revision,"운영부",account,[p],reconnect,false,false,DateTimeOffset.UtcNow,DateTimeOffset.UtcNow.AddMinutes(5),assignment);
         RealSmbEngine.State State(RealSmbEngine engine)=>(RealSmbEngine.State)typeof(RealSmbEngine).GetField("state",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(engine)!;
+        await Case("application startup restoration",async()=>{
+            var directory=Path.Combine(run,"startup-restore");
+            using(var first=new RealSmbEngine(directory)){first.EnableManagedMode();await first.ApplyPolicy(Policy(reconnect:false),default);var saved=State(first);saved.ConnectionsStopped=true;saved.Approvals[p.Id].Enabled=false;saved.Approvals[p.Id].Failures=4;saved.Approvals[p.Id].NextAttempt=DateTimeOffset.UtcNow.AddHours(1);Wire.Save(Path.Combine(directory,"smb-policy.json"),saved);}
+            using var second=new RealSmbEngine(directory);second.EnableManagedMode();await second.ApplyPolicy(Policy(reconnect:false),default);var restored=State(second);var approval=restored.Approvals[p.Id];
+            Check(approval.Enabled&&!restored.ConnectionsStopped,"Fresh app start restores assigned connection even when continuous reconnect is disabled");
+            Check(approval.Failures==0&&approval.NextAttempt<=DateTimeOffset.UtcNow,"Startup restoration does not wait for stale network backoff");
+            approval.Enabled=false;await second.ApplyPolicy(Policy(reconnect:false),default);Check(!approval.Enabled,"Startup restoration is performed once per app session");
+        });
+        foreach(var guard in new[]{"authentication","security-command","quarantine","pause"})await Case("startup preserves "+guard,async()=>{
+            var directory=Path.Combine(run,"startup-"+guard);
+            using(var first=new RealSmbEngine(directory)){first.EnableManagedMode();await first.ApplyPolicy(Policy(),default);var saved=State(first);saved.Approvals[p.Id].Enabled=false;saved.Approvals[p.Id].AuthRejected=guard=="authentication";saved.Approvals[p.Id].NeedsCommand=guard=="security-command";saved.Quarantined=guard=="quarantine";saved.ManagementPaused=guard=="pause";Wire.Save(Path.Combine(directory,"smb-policy.json"),saved);}
+            using var second=new RealSmbEngine(directory);second.EnableManagedMode();await second.ApplyPolicy(Policy(),default);Check(!State(second).Approvals[p.Id].Enabled,"App restart preserves "+guard+" guard");
+        });
+        await Case("startup held policy",async()=>{
+            using var engine=new RealSmbEngine(Path.Combine(run,"startup-held"));engine.EnableManagedMode();await engine.ApplyPolicy(Policy() with{ConnectionsHeld=true},default);
+            Check(State(engine).Approvals.Values.All(a=>!a.Enabled&&!a.Authorized),"Administrator hold cannot be bypassed by app startup even with populated profiles");
+            Check((await engine.Connect("held-startup",p,default)).State=="Failed","Held policy refuses explicit connect before native access");
+            var ordinary=System.Text.Json.JsonSerializer.Serialize(Policy(),Wire.Json);Check(!ordinary.Contains("connectionsHeld"),"Ordinary policy signature format remains compatible with existing clients");
+        });
         await Case("authentication rejection guard",async()=>{
             using var engine=new RealSmbEngine(Path.Combine(run,"auth-rejection"));engine.EnableManagedMode();
             var free=Enumerable.Range('D',23).Select(c=>((char)c)+":").Where(d=>NativeMapping.Get(d).Code==2250&&!NativeMapping.DeviceAssigned(d)).Take(3).ToArray();

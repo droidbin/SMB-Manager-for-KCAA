@@ -147,7 +147,7 @@ public static class Signature
 
 public record SaveAssignment(string Department, string ExpectedAccount, string[] ProfileIds, bool Reconnect = true, bool ForceDisconnect = false, int ExpectedRevision = 0, bool ResumeStopped = false, string AccessRole = "직원", bool FollowDepartment = false);
 public record DeviceAssignment(string Department, string ExpectedAccount, string[] ProfileIds, bool Reconnect, bool ForceDisconnect, int Revision, bool ResumeStopped = false, string AccessRole = "직원", bool FollowDepartment = false);
-public record DepartmentPolicy(string DeviceId, string SessionId, int Revision, string Department, string ExpectedAccount, Profile[] Profiles, bool Reconnect, bool ForceDisconnect, bool ResumeStopped, DateTimeOffset IssuedAt, DateTimeOffset ExpiresAt, int AssignmentRevision = 0, ProfileAccount[]? Accounts = null, string AccessRole = "직원");
+public record DepartmentPolicy(string DeviceId, string SessionId, int Revision, string Department, string ExpectedAccount, Profile[] Profiles, bool Reconnect, bool ForceDisconnect, bool ResumeStopped, DateTimeOffset IssuedAt, DateTimeOffset ExpiresAt, int AssignmentRevision = 0, ProfileAccount[]? Accounts = null, string AccessRole = "직원", [property:System.Text.Json.Serialization.JsonIgnore(Condition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)] bool ConnectionsHeld = false);
 public record PolicyEnvelope(DepartmentPolicy Payload, string Signature);
 public record ConnectionReport(string ProfileId, string Drive, string Unc, string Account, string AssignmentState, bool AppOwned, string EffectiveAccess = "미검증: 공유폴더 권한 확인 필요", string ConnectionState = "Unknown");
 public static class AssignmentRules

@@ -54,7 +54,7 @@ internal static class UiTheme
         header.ColumnStyles.Add(new(SizeType.Percent,100));header.ColumnStyles.Add(new(SizeType.AutoSize));header.ColumnStyles.Add(new(SizeType.AutoSize));
         var title=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true,Margin=Padding.Empty};
         title.Controls.Add(new Label{Text="SMB Manager",AutoSize=true,Font=Font(16,true),Margin=new(0,5,12,0)});
-        title.Controls.Add(new Label{Text=role+" · 2.0.0-beta.1 · 내부 시험",AutoSize=true,ForeColor=Muted,Margin=new(0,15,0,0)});
+        title.Controls.Add(new Label{Text=role+" · 2.0.0-beta.4 · 내부 시험",AutoSize=true,ForeColor=Muted,Margin=new(0,15,0,0)});
         header.Controls.Add(title,0,0);
         state.AutoSize=true;state.ForeColor=Muted;state.Anchor=AnchorStyles.Right;state.Margin=new(8,6,12,6);header.Controls.Add(state,1,0);
         var exit=new Button{Text="창 닫기",AutoSize=true,Margin=new(0,6,0,6)};Button(exit);exit.Click+=(_,_)=>close();header.Controls.Add(exit,2,0);return header;

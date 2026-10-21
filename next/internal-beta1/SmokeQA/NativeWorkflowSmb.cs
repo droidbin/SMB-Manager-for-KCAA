@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using SmbManager.Local;
 using SmbManager.Local.Client;
@@ -36,6 +36,10 @@ internal static class NativeWorkflowSmb
             var preserved=await externalEngine.Connect("external",p,CancellationToken.None);Check(preserved.State=="Succeeded"&&preserved.Detail.StartsWith("ALREADY_CONNECTED"),"기존 동일 계정 연결은 앱 소유권 없이 보존");
             Check(WNetCancelConnection2(drive,0,false)==0,"기존 외부 연결의 수동 해제 시험");await externalEngine.RefreshConnections(CancellationToken.None);await externalEngine.ReconnectDue(CancellationToken.None);await externalEngine.RefreshConnections(CancellationToken.None);
             Check(externalEngine.Connections().Single(c=>c.ProfileId==p.Id) is {ConnectionState:"Connected",AppOwned:true},"외부 연결을 사용하던 PC도 수동 해제 후 배정 연결 자동 복구");await externalEngine.DisconnectAllOwned(CancellationToken.None);await NativeManagementWorkflow.Run(root,unc,drive,Check,d=>WNetCancelConnection2(d,0,false));
+            var startupDirectory=Path.Combine(root,"startup-restore");var startupPolicy=policy with{Reconnect=false,IssuedAt=DateTimeOffset.UtcNow,ExpiresAt=DateTimeOffset.UtcNow.AddMinutes(2)};
+            using(var initial=new RealSmbEngine(startupDirectory)){initial.EnableManagedMode();await initial.ApplyPolicy(startupPolicy,default);await initial.ReconnectDue(default);Check(Mapping(drive)==0,"Startup performs actual connection with continuous reconnect disabled");await initial.DisconnectAllOwned(default);}
+            using(var restarted=new RealSmbEngine(startupDirectory)){restarted.EnableManagedMode();await restarted.ApplyPolicy(startupPolicy with{IssuedAt=DateTimeOffset.UtcNow},default);await restarted.ReconnectDue(default);await restarted.RefreshConnections(default);Check(Mapping(drive)==0&&restarted.Connections().Single(c=>c.ProfileId==p.Id).ConnectionState=="Connected","Fresh app session restores actual mapping without manual action");await restarted.DisconnectAllOwned(default);}
+            using(var held=new RealSmbEngine(Path.Combine(root,"startup-held"))){held.EnableManagedMode();await held.ApplyPolicy(startupPolicy with{ConnectionsHeld=true,IssuedAt=DateTimeOffset.UtcNow},default);await held.ReconnectDue(default);Check(Mapping(drive)==2250,"Administrator hold prevents startup from recreating actual mapping");}
             using var unavailable=new RealSmbEngine(Path.Combine(root,"unavailable-engine"));unavailable.EnableManagedMode();
             var missing=p with{Id="missing-test",Unc=unc+"-missing"};var missingPolicy=policy with{Profiles=[missing],IssuedAt=DateTimeOffset.UtcNow,ExpiresAt=DateTimeOffset.UtcNow.AddMinutes(2)};
             await unavailable.ApplyPolicy(missingPolicy,CancellationToken.None);
