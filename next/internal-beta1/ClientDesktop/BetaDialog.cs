@@ -1,4 +1,4 @@
-using SmbManager.Local;
+﻿using SmbManager.Local;
 using SmbManager.Local.Client;
 using System.Diagnostics;
 
@@ -12,13 +12,14 @@ internal sealed class BetaDialog : Form
     private readonly ClientAgent agent;
     private readonly CancellationTokenSource stop=new();
     private readonly string installed=FileVersionInfo.GetVersionInfo(typeof(BetaDialog).Assembly.Location).FileVersion??"확인 불가";
+    private readonly string productVersion=typeof(BetaDialog).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute),false).Cast<System.Reflection.AssemblyInformationalVersionAttribute>().FirstOrDefault()?.InformationalVersion.Split('+')[0]??"확인 불가";
     private BetaRelease? release;
     public BetaDialog(ClientAgent client)
     {
         agent=client;Text="SMB Manager — 업데이트";UiTheme.Form(this,new(720,540),new(620,440));
         var root=new TableLayoutPanel{Dock=DockStyle.Fill,Padding=new(18),ColumnCount=1,RowCount=3};
         root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,100));Controls.Add(root);
-        var hint=UiTheme.Hint($"현재 버전: 2.0.0-beta.1 · 설치 빌드 {installed}\n회사 서버에서 접근이 허용된 시험 채널을 확인합니다. 클로즈베타는 운영부·관리자 전용입니다.");
+        var hint=UiTheme.Hint($"현재 버전: {productVersion} · 설치 빌드 {installed}\n회사 서버에서 접근이 허용된 시험 채널을 확인합니다. 클로즈베타는 운영부·관리자 전용입니다.");
         root.Controls.Add(hint,0,0);UiTheme.Wrap(hint,root);
         var actions=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true};
         actions.Controls.Add(channels);UiTheme.Button(check,true);UiTheme.Button(download);actions.Controls.Add(check);actions.Controls.Add(download);
@@ -49,7 +50,7 @@ internal sealed class BetaDialog : Form
         await agent.SelectBetaChannel(choice.Id,stop.Token);
         var found=await agent.GetBetaRelease(choice.Id,stop.Token);if(IsDisposed)return;
         if(found is null){detail.Text=BetaChannels.Label(choice.Id)+"에 등록된 업데이트 설치 파일이 없습니다.\r\n서버관리자가 시험 배포 파일을 등록하면 이 화면에서 확인할 수 있습니다.\r\n\r\n현재 설치 빌드: "+installed;return;}
-        var comparison=BetaUpdate.Compare(found,installed,"2.0.0-beta.1");
+        var comparison=BetaUpdate.Compare(found,installed,productVersion);
         var status=comparison switch{1=>"새 업데이트가 있습니다.",0=>"현재 등록된 최신 빌드를 사용 중입니다.",-1=>"설치된 빌드가 서버 배포 파일보다 최신입니다.",_=>"배포 파일은 있으나 빌드 정보가 없어 업데이트 여부를 비교할 수 없습니다."};
         release=comparison is 0 or -1?null:found;
         detail.Text=$"{status}\r\n\r\n{BetaChannels.Label(choice.Id)} · {found.Version}\r\n배포 빌드: {found.FileVersion??"미제공"}\r\n{found.FileName}\r\n{found.Size/1048576d:F1} MB\r\n\r\n{found.Notes}";

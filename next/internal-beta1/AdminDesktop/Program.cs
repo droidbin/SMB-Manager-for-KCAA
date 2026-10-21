@@ -11,6 +11,7 @@ internal static class Program
         ApplicationConfiguration.Initialize();
         try
         {
+            if(args.Contains("--github-update-preview") && Wire.Arg(args,"--snapshot","").Length>0){UiDiagnostics.Run(new AdminUpdateDialog(preview:true),args);return;}
             if(args.Contains("--beta-preview") && Wire.Arg(args,"--snapshot","").Length>0){var ready=Wire.Load<ServerReady>(Wire.Arg(args,"--ready"));using var betaHttp=Wire.Http(ready.Url,admin:ready.AdminKey);UiDiagnostics.Run(new BetaAccessDialog(betaHttp,Wire.Arg(args,"--device")),args);return;}
             if(args.Contains("--departments-preview") && Wire.Arg(args,"--snapshot","").Length>0){using var previewHttp=new HttpClient{BaseAddress=new Uri("http://127.0.0.1:1/")};UiDiagnostics.Run(new DepartmentManager(previewHttp),args);return;} if(args.Contains("--profiles-preview") && Wire.Arg(args,"--snapshot","").Length>0){using var previewHttp=new HttpClient{BaseAddress=new Uri("http://127.0.0.1:1/")};UiDiagnostics.Run(new ProfileManager(previewHttp),args);return;}
             if(args.Contains("--notification-preview") && Wire.Arg(args,"--snapshot","").Length>0){UiDiagnostics.Run(new TextRequest("알림 푸시","선택한 PC의 클라이언트에 표시할 알림을 입력하세요."),args);return;}
@@ -53,10 +54,11 @@ internal sealed class AdminForm : Form
     private string lastRows="",lastJobs="",lastAudit="";
     public AdminForm(ServerReady ready,bool snapshot=false){
         snapshotMode=snapshot;http=Wire.Http(ready.Url,admin:ready.AdminKey);
-        Text="SMB Manager 서버관리자 · 베타 2 · 빌드 10";UiTheme.Form(this,new(1220,920),new(1000,760));
+        Text="SMB Manager 서버관리자 · 베타 3 · 빌드 11";UiTheme.Form(this,new(1220,920),new(1000,760));
         var root=UiTheme.ScrollingRoot(this,4,960);root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,100));root.RowStyles.Add(new(SizeType.Absolute,100));
         root.Controls.Add(UiTheme.Header("서버관리자",summary,Close),0,0);
         var toolbar=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true};
+        toolbar.Controls.Add(Action("업데이트 확인",()=>{using var dialog=new AdminUpdateDialog();dialog.ShowDialog(this);return Task.CompletedTask;},allowOffline:true));
         toolbar.Controls.Add(Action("등록 승인·복원",Approve));toolbar.Controls.Add(Action("PC 폴더·부서 배정",Assign));
         toolbar.Controls.Add(Action("부서 기본 설정·계정",async()=>{using var dialog=new DepartmentManager(http);dialog.ShowDialog(this);await RefreshData();}));
         toolbar.Controls.Add(Action("공유폴더 추가·관리",async()=>{using var dialog=new ProfileManager(http);dialog.ShowDialog(this);await RefreshData();}));

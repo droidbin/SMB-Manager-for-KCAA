@@ -84,7 +84,7 @@ internal sealed class ClientForm : Form
     private string Address=>url.SelectedItem is ServerChoice server&&url.Text==server.Label?server.Address:url.Text.Trim();
     public ClientForm(string bootstrapFile,string directory,string policyDirectory,bool migrateLegacy=false){
         stateDir=directory;policyDir=policyDirectory;snapshotMode=!migrateLegacy;
-        Text="SMB Manager · 베타 2 · 빌드 10";UiTheme.Form(this,new(800,820),new(660,650));
+        Text="SMB Manager · 베타 3 · 빌드 11";UiTheme.Form(this,new(800,820),new(660,650));
         var root=UiTheme.ScrollingRoot(this,4,620);
         root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.AutoSize));root.RowStyles.Add(new(SizeType.Percent,100));root.RowStyles.Add(new(SizeType.Absolute,130));
         var header=new TableLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,ColumnCount=2,Padding=new(14),BackColor=Color.White,Margin=new(0,0,0,10)};
