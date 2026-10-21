@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Contracts/Contracts.csproj" />
+  <Project Path="ManagementServer/ManagementServer.csproj" />
+  <Project Path="ClientEngine/ClientEngine.csproj" />
+  <Project Path="ClientDesktop/ClientDesktop.csproj" />
+  <Project Path="AdminDesktop/AdminDesktop.csproj" />
+  <Project Path="SmokeQA/SmokeQA.csproj" />
+  <Project Path="LabQA/LabQA.csproj" />
+  <Project Path="AlphaLauncher/AlphaLauncher.csproj" />
+</Solution>

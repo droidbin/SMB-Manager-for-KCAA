@@ -1,0 +1,222 @@
+[
+  {
+    "sha256": "4A6A2FE5ED3379B8D5B972A0402A2578435F427B8DE178AA06D246B8F1B1A3DB",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "D4F5E01426048784E308CFDFD08E5004255724721D45C837D0DAC45A30CECB62",
+    "path": "SMB Manager V1.7.10.exe",
+    "app": true
+  },
+  {
+    "sha256": "E41FFA3201B9C465B722E223BE1891AC65C39179A09CDEA8C370EBF7C45CB90B",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "0DDD45C4754283B0CA669123020EEE5D51384435FE22AC06BB33942FF7488725",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "sha256": "8314A9B5A0B4D1B4349933DCD7F3951DD7A86D849F51E664613058294C525858",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "06DFBB6A9529C7399FCB9BCC0D2D10EE7FA7BB553310EE3C08ED0836C9E0324E",
+    "path": "SMB Manager V1.7.11.exe",
+    "app": true
+  },
+  {
+    "sha256": "6B76F87C67D15513CD084C0E94B43A5A7F0CEA8EF144742354B33A4D99E22224",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "CA498EC9176243D042D02F48F486C5D2E1DEF40D9DCFCADB47D0C1F54B1C7779",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "sha256": "27EB2172F734DFB6D81BB7CD783D53B8CDD77C8A0043275CE0D1CE339334F855",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "BF56997671781B60F35071B7266653D7C6332771A14A6225C673C381665D3814",
+    "path": "SMB Manager V1.7.7.exe",
+    "app": true
+  },
+  {
+    "sha256": "6FE339EC167BDFEBE2A33D6618B5A288BF3D61D9F1FFE35644890D5581859C35",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "5267EE52A5FB854F1C57D03BDA6FA2D18AC8789D768E2A4ECD6A214A4983B367",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "sha256": "27EB2172F734DFB6D81BB7CD783D53B8CDD77C8A0043275CE0D1CE339334F855",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "E5D9F5CDAF99A652185F11D6C050AD97E25F964EF0C316F0EAFA110FCD439E4D",
+    "path": "SMB Manager V1.7.8.exe",
+    "app": true
+  },
+  {
+    "sha256": "15EAB067054BC19F5AFEB4C36EF902E0B6F5B1E41A5B44B3228EB1B88FEDDEF1",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "5267EE52A5FB854F1C57D03BDA6FA2D18AC8789D768E2A4ECD6A214A4983B367",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "sha256": "8DCBE9106ED61647731037AA28E6B430465B2DDCD2FE4B08C5AC5AE3D4B1B073",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "E90A42ED5FDBC8053BEFA8348105DB77F959486B96D38F0975FDF5EDC19FD8AF",
+    "path": "SMB Manager V1.7.9.exe",
+    "app": true
+  },
+  {
+    "sha256": "03BC1DA7E30CE034541198D190B5A95F69ADE02265CE89D1365CCD72CC0D2EB5",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "B0D91B58D6B4FAF6D9CF671F9A50E413A527C4F75B6AA635335CE1647E51FFBB",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "sha256": "EA5A06F73B03143CE7B3C487F4CF8AE78E6F2C5B5E723AB882FE1CCB02425111",
+    "path": "README.md",
+    "app": false
+  },
+  {
+    "sha256": "FB9BEB8BAF0299396B327309948A35C0508B0EA11CE5586F04CD07352C4B3B39",
+    "path": "SMB Manager V1.7.9-beta.1.exe",
+    "app": true
+  },
+  {
+    "sha256": "B3A4D058F963680F6F64051D2D88C7446A3435FB69C4C875A84A5C2382DEDFC1",
+    "path": "Uninstall.exe",
+    "app": false
+  },
+  {
+    "sha256": "68B3B8D1F67EE1648A9AE571B6D840E626DCC48B94C5FB8F56AF611438A05B41",
+    "path": "version.ini",
+    "app": false
+  },
+  {
+    "sha256": "8336C48CB49F39BC6EC3BA6F9689EA6F1EE3B370898CC0BDE248604DB2F8B48B",
+    "path": "Fonts/LICENSE-NotoSansCJK.txt",
+    "app": false
+  },
+  {
+    "sha256": "26D0C6748500A0444844280B308F5B62C7AE92AC6C6AC88148E502DD211EB52A",
+    "path": "Fonts/NotoSansCJKkr-Bold.otf",
+    "app": false
+  },
+  {
+    "sha256": "6BCB2A0703AA137E874FC2DFFA85F6C21BA9A67FA329E81B8C801663AF7E992A",
+    "path": "Fonts/NotoSansCJKkr-Regular.otf",
+    "app": false
+  },
+  {
+    "path": "README.md",
+    "sha256": "506B45EAB5E52AC56CD0AAD4D973C255E66FF184D6B5C130FB2491743F6333FA",
+    "app": false
+  },
+  {
+    "path": "version.ini",
+    "sha256": "E2502253148F054A1EC2AD80F85A4CFB1ADBE955B3FD1D3949C4471F3AA3636E",
+    "app": false
+  }
+]

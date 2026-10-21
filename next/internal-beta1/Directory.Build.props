@@ -1,0 +1,13 @@
+﻿<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.0.0-beta.2</Version>
+    <FileVersion>2.0.118.0</FileVersion>
+    <InformationalVersion>2.0.0-beta.2+qa.10</InformationalVersion>
+    <SmbOutputRoot Condition="'$(SmbOutputRoot)' == ''">$(MSBuildThisFileDirectory).local</SmbOutputRoot>
+<BaseOutputPath>$(SmbOutputRoot)/bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(SmbOutputRoot)/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

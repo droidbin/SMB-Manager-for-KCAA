@@ -1,0 +1,6 @@
+Noto Sans CJK KR
+
+Source: https://github.com/notofonts/noto-cjk
+License: SIL Open Font License, Version 1.1
+
+This package includes Noto Sans CJK KR Regular and Bold font files for consistent application UI rendering.

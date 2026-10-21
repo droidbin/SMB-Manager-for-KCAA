@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>WinExe</OutputType>
+    <ApplicationIcon>../Assets/app-icon.ico</ApplicationIcon>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../ClientEngine/ClientEngine.csproj" />
+    <Compile Include="../UiDiagnostics.cs" Link="UiDiagnostics.cs" />
+    <Compile Include="../UiTheme.cs" Link="UiTheme.cs" />
+    <Content Include="../../../SMB Manager V1.7.11/Fonts/*" Link="Fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../Assets/NotoSansCJK-OFL.txt" Link="Fonts/OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

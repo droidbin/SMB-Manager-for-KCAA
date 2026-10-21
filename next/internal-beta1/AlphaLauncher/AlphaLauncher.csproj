@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><OutputType>WinExe</OutputType><ApplicationIcon>../Assets/app-icon.ico</ApplicationIcon></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Contracts/Contracts.csproj" /></ItemGroup>
+</Project>

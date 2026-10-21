@@ -1,0 +1,18 @@
+namespace SmbManager.Local;
+public record RegistrationRequest(string Name, string Department, string User, string SessionId, HardwareIdentity? Hardware, string ComputerName = "");
+public record ProfileAccount(string ProfileId, string Account);
+public record ShareCredential(string Account, string Password);
+public record SaveShareCredential(string Department, string ProfileId, string Account, string Password, int? ExpectedRevision = null);
+public record DepartmentTemplate(string Department, string ExpectedAccount, string[] ProfileIds, string AccessRole = "직원");
+public record SaveDepartmentTemplate(string Department, string ExpectedAccount, string[] ProfileIds, string AccessRole = "직원", bool IncludeIndividual = false, bool IncludeApprovedUnassigned = false, int? ExpectedRevision = null);
+public record TemplateImpact(int Revision, string[] Following, string[] Individual, string[] ApprovedUnassigned);
+public record CredentialSummary(string Department, string Server, string Account, bool PasswordSaved, string[] Profiles);
+public record CredentialImpact(int Revision, string Server, string[] Profiles, string Account, bool PasswordSaved);
+public record RegistrationCorrection(string Name, string Department, DateTimeOffset At);
+public record CorrectionRequest(string Name, string Department);
+public record ReviewCorrection(bool Accept);
+public record ClientRegistration(string Name, string RequestedDepartment, string Department, bool Approved, string ComputerName, DateTimeOffset RequestedAt, RegistrationCorrection? Correction, bool Archived = false);
+public record NotificationEntry(string Id, string Text, DateTimeOffset ReceivedAt);
+public record ProfileStatusChange(bool Enabled, int ExpectedRevision, int ExpectedPolicyRevision);
+public record ProfileImpact(int Revision, string[] Devices, string[] Departments);
+public record AuditEntry(DateTimeOffset At, string Action, string Target, string Summary);

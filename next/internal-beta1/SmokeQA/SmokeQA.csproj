@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../ClientEngine/ClientEngine.csproj" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="../../../SMB Manager V1.7.11/SMB Manager V1.7.11.exe" LogicalName="Migration.App" /><EmbeddedResource Include="../../../SMB Manager V1.7.11/Uninstall.exe" LogicalName="Migration.Uninstall" /></ItemGroup>
+</Project>
