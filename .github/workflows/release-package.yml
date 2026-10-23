@@ -1,82 +1,81 @@
-name: Release package
-
+name: Legacy build and verified release
 on:
   push:
-    branches:
-      - master
-    paths:
-      - ".github/workflows/release-package.yml"
-      - "SMB Manager V*/version.ini"
-      - "SMB Manager V*.zip"
+    branches: [master]
+    paths: ['src/legacy/**', 'assets/fonts/**', 'tools/release_package.py', '.github/workflows/release-package.yml']
+  pull_request:
+    paths: ['src/legacy/**', 'assets/fonts/**', '.github/workflows/release-package.yml']
   workflow_dispatch:
-
+    inputs:
+      version:
+        description: 'Legacy source version (1.x only)'
+        default: 'V1.7.11'
+        required: true
+      publish:
+        description: 'Publish only after package QA; never overwrite or promote Latest'
+        type: boolean
+        default: false
+      expected_sha256:
+        description: 'Required for publishing: exact independently verified ZIP SHA256'
+        required: false
 permissions:
-  contents: write
-
+  contents: read
+concurrency:
+  group: legacy-release-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  release:
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+      sha256: ${{ steps.package.outputs.sha256 }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Resolve package
+      - uses: actions/checkout@v4
+      - name: Resolve and build legacy source
         id: package
         shell: pwsh
+        env:
+          VERSION: ${{ inputs.version || 'V1.7.11' }}
         run: |
-          $versionFiles = Get-ChildItem -Path . -Recurse -Filter version.ini |
-            Where-Object { $_.FullName -match 'SMB Manager V[^/\\]+[/\\]version\.ini$' } |
-            Sort-Object @{ Expression = {
-                $match = [regex]::Match($_.Directory.Name, 'V(\d+\.\d+\.\d+)')
-                if ($match.Success) { [version]$match.Groups[1].Value } else { [version]'0.0.0' }
-              }; Descending = $true }, @{ Expression = { $_.Directory.Name -notmatch '-' }; Descending = $true }
-
-          if (-not $versionFiles) {
-            throw "No version.ini file found under an SMB Manager version folder."
-          }
-
-          $versionFile = $versionFiles[0]
-          $version = $null
-          foreach ($line in Get-Content -LiteralPath $versionFile.FullName -Encoding UTF8) {
-            if ($line -match '^\s*Version\s*=\s*(.+?)\s*$') {
-              $version = $Matches[1].Trim()
-              break
-            }
-          }
-
-          if ([string]::IsNullOrWhiteSpace($version)) {
-            throw "Version value was not found in $($versionFile.FullName)."
-          }
-
-          if (-not $version.StartsWith("V", [System.StringComparison]::OrdinalIgnoreCase)) {
-            $version = "V$version"
-          }
-
-          $zipName = "SMB Manager $version.zip"
-          $zip = Get-ChildItem -Path . -File -Filter $zipName | Select-Object -First 1
-          if (-not $zip) {
-            throw "Release package was not found: $zipName"
-          }
-
-          "version=$version" >> $env:GITHUB_OUTPUT
-          "zip_path=$($zip.FullName)" >> $env:GITHUB_OUTPUT
-          "zip_name=$zipName" >> $env:GITHUB_OUTPUT
-
-      - name: Create or update GitHub release
-        shell: bash
+          $ErrorActionPreference = 'Stop'
+          if ($env:VERSION -cnotmatch '^V1\.\d+\.\d+$') { throw 'Only legacy 1.x is supported.' }
+          $source = Join-Path $PWD "src/legacy/SMB Manager $env:VERSION/source/build.ps1"
+          if (!(Test-Path -LiteralPath $source)) { throw 'Source version not found.' }
+          $versionFile = Join-Path (Split-Path (Split-Path $source -Parent) -Parent) "version.ini"
+          if (!(Get-Content -LiteralPath $versionFile | Where-Object { $_ -ceq "Version=$env:VERSION" })) { throw "Historical folder version mismatch; preserve original history." }
+          & $source
+          $zip = Join-Path $PWD ".local/legacy-builds/SMB Manager $env:VERSION.zip"
+          "version=$env:VERSION" >> $env:GITHUB_OUTPUT
+          "sha256=$((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: legacy-package
+          path: .local/legacy-builds/SMB Manager ${{ steps.package.outputs.version }}.zip
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: legacy-package
+          path: package
+      - name: Publish exact verified package without overwriting
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.package.outputs.version }}
-          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
-          ZIP_NAME: ${{ steps.package.outputs.zip_name }}
-        run: |
-          set -euo pipefail
-
-          if gh release view "$VERSION" >/dev/null 2>&1; then
-            gh release upload "$VERSION" "$ZIP_PATH#${ZIP_NAME}" --clobber
-          else
-            gh release create "$VERSION" "$ZIP_PATH#${ZIP_NAME}" \
-              --title "$ZIP_NAME" \
-              --notes "Automated release for SMB Manager $VERSION."
-          fi
+          VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: >-
+          python tools/release_package.py --version "$VERSION"
+          --package "package/SMB Manager $VERSION.zip" --expected-sha256 "$EXPECTED_SHA256"
+          --source-commit "$SOURCE_COMMIT" --notes-file docs/LEGACY-RELEASE-NOTES.md --publish

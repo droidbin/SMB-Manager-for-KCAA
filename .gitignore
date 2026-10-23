@@ -1,4 +1,24 @@
-.admin-tools/
-.build-logs/
+.local/
+.wix/
+**/.admin-tools/
+**/.build-logs/
+**/bin/
+**/obj/
+__pycache__/
 *.tmp.exe
 *.log
+*.protected
+*.pfx
+*.p12
+*.key
+*.dpapi
+.env
+.env.*
+!.env.example
+*배포암호*.txt
+관리자ZIP-배포암호.txt
+내부 배포/
+SMB Manager V*.zip
+**/SMB Manager V*.zip
+/src/legacy/SMB Manager V*/*.exe
+/src/legacy/SMB Manager V*/Fonts/
