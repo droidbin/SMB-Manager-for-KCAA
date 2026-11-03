@@ -1,0 +1,4 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup><ProjectReference Include="../Contracts/Contracts.csproj" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="LegacyCatalog.json" LogicalName="SmbManager.LegacyCatalog" /><InternalsVisibleTo Include="SmokeQA" /></ItemGroup>
+</Project>

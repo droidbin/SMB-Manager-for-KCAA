@@ -1,0 +1,160 @@
+{
+  "buildRevision": 37,
+  "directCsSources": [
+    {
+      "path": "UiDiagnostics.cs",
+      "sha256": "F2685173B18354B6477BCB0F8817C0AEDB89B08C0F6B33256202C2DC013D9F25"
+    },
+    {
+      "path": "UiTheme.cs",
+      "sha256": "177C7ED78342662848AC7D4A55C6CA65A20B829E7DB7A5D5C52FB70F0ACC472A"
+    },
+    {
+      "path": "ClientDesktop\\BetaDialog.cs",
+      "sha256": "FF2AE1D601321AC22F9F65DE10E10B50BCAB91AFFB23A42476971B814E7A95D7"
+    },
+    {
+      "path": "ClientDesktop\\BugReportDialog.cs",
+      "sha256": "B176B3CCC7172F39B9E3299DF934E6FCC9CDF766C2ED1FA246CE5EDA95B91AFA"
+    },
+    {
+      "path": "ClientDesktop\\ClientExperiencePresenter.cs",
+      "sha256": "36367A63CED990FFDE340B5D20668EDA10A35C9D311AFEA94953C077DA30FD9C"
+    },
+    {
+      "path": "ClientDesktop\\ClientForm.cs",
+      "sha256": "ABECF2CD58076CEFA09CAF68A4208385CCDC64E1EC54096FD8029EE09133C8DA"
+    },
+    {
+      "path": "ClientDesktop\\ClientInstance.cs",
+      "sha256": "3BE4A49DE02F124A6E94AD4B20AC335234876FB40404050BF0387C8A7ACC36C5"
+    },
+    {
+      "path": "ClientDesktop\\ClientSettingsDialog.cs",
+      "sha256": "84BE22F7A9281C9F7264435844D61D6781B6FE5B87C57ABAB3B3AEAAC848C46F"
+    },
+    {
+      "path": "ClientDesktop\\CompanyNotificationForm.cs",
+      "sha256": "580DD47AE3AB3CF24DF039EB938976A82015A284410483592741478F31E116B7"
+    },
+    {
+      "path": "ClientDesktop\\ExitConfirmationForm.cs",
+      "sha256": "DC4F44D1A104FD6B2A1876449E45C968B0F20919CBFACA1D3DD9DB5CEEACE4C5"
+    },
+    {
+      "path": "ClientDesktop\\NoticeContent.cs",
+      "sha256": "E070CF02C2319740DD8F8E28254D57299269BC9A5CD81ECF5C574745CBFE7D81"
+    },
+    {
+      "path": "ClientDesktop\\Program.cs",
+      "sha256": "6CF9E308FF2C67E8F77A213ABE20813EEF512E2EC442A0A3DFFE22A49C11A1BC"
+    },
+    {
+      "path": "ClientEngine\\AccountTransition.cs",
+      "sha256": "3EF657335C84F50C4FA985AADEA8F1FDE7EF7943852E8B5D8C532E456A23CED9"
+    },
+    {
+      "path": "ClientEngine\\Agent.cs",
+      "sha256": "B0D093561672EA68D754007CEEC37D11E23CBFB16996E7E712DC1ED3C13021DB"
+    },
+    {
+      "path": "ClientEngine\\AgentDiagnostics.cs",
+      "sha256": "9A5D68628966E8CDDB4214AF6FCD3218E910198C64CC64279EB511F89FF900FA"
+    },
+    {
+      "path": "ClientEngine\\BetaClient.cs",
+      "sha256": "236C68EE7D55A9FA1BA57749E394A65088F261A2FD85A36D842384B4F7A5BF1E"
+    },
+    {
+      "path": "ClientEngine\\CanarySensor.cs",
+      "sha256": "9368CD33CCDF80F3902D70263218620810F3B004107B7CBBE994D94500E29E99"
+    },
+    {
+      "path": "ClientEngine\\CompanyCommunication.cs",
+      "sha256": "FD355DC45C79819BA7DAEBF244581F53AA06D773F5F818A116635CD5277977BE"
+    },
+    {
+      "path": "ClientEngine\\DiagnosticJournal.cs",
+      "sha256": "CFA39E06F083A864A810A4EAE7EAC7F833F2873D626FFB463BB285E47B0B40E4"
+    },
+    {
+      "path": "ClientEngine\\InstallCompletion.cs",
+      "sha256": "4D59AE23C4A9760DBF8D10E94D1069AEB059D297871C1DB315ED725CF26B0C23"
+    },
+    {
+      "path": "ClientEngine\\InstallerClientGate.cs",
+      "sha256": "E84C518C5E2E57A94CE831E67E602BAAECE441C0AC0E4428D47C69791CF27EBC"
+    },
+    {
+      "path": "ClientEngine\\LegacyMigration.cs",
+      "sha256": "84924B585B7604BF55607C509EC81BB3DEDE8F7E1C213952E2C2823DECB5D01D"
+    },
+    {
+      "path": "ClientEngine\\ManagedPolicy.cs",
+      "sha256": "665B4B06C5251914138B52A22B265BDA0D1D94999F896385553EE47AEC31C3AE"
+    },
+    {
+      "path": "ClientEngine\\ManagementClock.cs",
+      "sha256": "9EB4BE9E7B63CD6DE68BA78174B08EA1CF647A4FC79241D99BCEE818D3A4DB55"
+    },
+    {
+      "path": "ClientEngine\\RealSmbEngine.cs",
+      "sha256": "8D2DAB8426F8C8FCE06CFB820EC0CFC3EF0B84DD24C5F4E743890BD44F359202"
+    },
+    {
+      "path": "ClientEngine\\SmbCredentialReset.cs",
+      "sha256": "1FD4C098A21E2F8F38387435E97B8E1C30BEE5B6D369E7CEC51338A4E13E1FD5"
+    },
+    {
+      "path": "ClientEngine\\WindowsCredential.cs",
+      "sha256": "B585E9283C558DF3B0AA5EC011CDCFF444CEE3CB37C218129A25A8870EE5560A"
+    },
+    {
+      "path": "Contracts\\AdminGithubUpdate.cs",
+      "sha256": "91171646B79E2205857F94D7693D2A4373ED9E1B483AF98A428994AAB61D8D14"
+    },
+    {
+      "path": "Contracts\\AdministratorPlatform.cs",
+      "sha256": "E667CB6F14770EB5AD0F6E57AACD13D898655E45B2850D19F7FE8BD8E7CCD5C0"
+    },
+    {
+      "path": "Contracts\\BetaUpdate.cs",
+      "sha256": "22B11BEFB46BA91898E794E0A3AE4550B21E61B4AFC93110AF7A2C3F37868C23"
+    },
+    {
+      "path": "Contracts\\ClientDiagnostics.cs",
+      "sha256": "19E94580935104398C37BB4F0A894640EB24F05A36302099599CAA1018224A23"
+    },
+    {
+      "path": "Contracts\\CompanyCommunication.cs",
+      "sha256": "8FF5B371BFCF53081213CF6A7656157338A6F4EE48D2DF0B90BFB0962A0CC70D"
+    },
+    {
+      "path": "Contracts\\ConnectionRules.cs",
+      "sha256": "3FD3DF528B696EC15A19AD56A7A6A597A1043336B89638502C16E490DFF50661"
+    },
+    {
+      "path": "Contracts\\HardwareIdentity.cs",
+      "sha256": "152818EF098B9773E73E6623E51FBE1EFD55027F783D4317F49A4D227877F004"
+    },
+    {
+      "path": "Contracts\\Protocol.cs",
+      "sha256": "29D97D35DD6177DAF598F71E2FFB907D93C48BF8F3228EF7115B2784589DE99F"
+    },
+    {
+      "path": "Contracts\\Registration.cs",
+      "sha256": "85A68656351F1AF4B04A8D28B07D3FFEC437D735981609FA2E33CF88FCA718C0"
+    },
+    {
+      "path": "Contracts\\SecretFile.cs",
+      "sha256": "91A031AF371EA07BFA75E98B143BB3A8F434AD49A46EA187DE9C5BD5FB88A0EE"
+    },
+    {
+      "path": "Contracts\\ServerStartupReadiness.cs",
+      "sha256": "F68481B5805C882893CB83DD634191C297AF1168E07A2635F8E8BAF418727550"
+    }
+  ],
+  "fileVersion": "2.0.145.0",
+  "scope": "Exact 38 direct C# sources used to compile the client/engine/contracts. Version metadata specified by build properties. Runtime and signed installer verification recorded in release assets.",
+  "version": "2.0.5"
+}
