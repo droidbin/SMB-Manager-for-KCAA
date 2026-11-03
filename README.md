@@ -4,30 +4,29 @@ Windows SMB 공유폴더를 부서별 Drive로 연결하고 연결 상태 점검
 
 | 구분 | 버전 | 다운로드 및 상태 |
 |---|---|---|
-| **정식** | **V1.7.11** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.11) · [설치 ZIP](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/download/V1.7.11/SMB.Manager.V1.7.11.zip) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
-| **알파테스트** | **2.0.0-beta.5 · 클라이언트 빌드 25** | [시험용 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build25) · 전체 QA 미승인, 오픈베타 미승인 |
+| **정식** | **V1.7.12** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
+| **베타** | **2.0.0-beta.5 · 클라이언트 build32-r1** | [베타 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) · 사내 테스트용, 정식 전환 전 |
 
-## 정식 설치
+## 테스트와 배포
 
-1. 정식 설치 ZIP을 다운로드하고 압축을 해제합니다.
-2. `Setup.exe`를 실행해 설치를 완료합니다.
-3. 생성된 바로가기로 프로그램을 실행합니다.
+앞으로 알파·클로즈베타·오픈베타를 별도 단계로 운영하지 않습니다.
 
-**포터블 실행은 지원하지 않습니다.** ZIP은 설치 파일을 담은 배포 패키지입니다. 정식 1.7.11은 반복 자동 재연결 문제를 수정한 핫픽스입니다.
+- **베타:** 내부 Windows 10/11 VM과 부서원 대상 테스트.
+- **정식:** 핵심 QA 필수 세부 항목의 통과율이 90% 이상이고 중대 결함·설치본 무결성·업데이트 전달 확인을 완료하면 전체 임직원 대상으로 전환.
+- 정식 전환 후에도 발견한 문제를 수정해 계속 업데이트합니다.
 
-## 알파테스트 안내
+핵심 QA는 실제 설치·업데이트와 등록/설정 보존, 실제 서버 연결·권한·파일 작업, 변경 영향과 중대 문제, 서명·무결성·복구, GitHub 및 인증된 앱 전달입니다. 미실행·실패·차단은 통과로 세지 않습니다. 장시간 반복·전체 화면 조합·광범위 호환성 검사는 확장 검사 기록으로 보존합니다.
 
-- 빌드 25는 클라이언트 전용 MSI입니다. 관리자/서버 설치본은 포함하지 않으며 기존 관리 서버와 실제 SMB 서버·배정 계정이 필요합니다.
-- 1.x 앱의 **베타 버전 포함** 옵션은 **1.x 계열**에만 적용됩니다. 2.x 알파테스트는 해당 옵션으로 설치되지 않습니다.
-- 설치 전 업무 파일을 저장하고 공유폴더의 문서·탐색기를 닫으세요. 설치 시 기존 SMB 연결·저장 매핑과 확인된 구버전을 정리하므로 릴리스의 안내를 먼저 확인하세요.
-- 약 3시간 27분, 관찰 202회·복구 7회의 시험 후 사용자 요청으로 배포한 예외 후보입니다. 남아 있는 실제 설치 화면·Windows 11·재부팅·장기 사용·보안 프로그램 호환성 QA가 통과한 것으로 해석하지 않습니다.
-- 빌드 25의 자동 **Source code** ZIP/TAR에는 1.x 소스만 있습니다. 배포 MSI를 재현하는 2.x 소스 스냅샷이 아닙니다. [소스 범위와 배포 이력](docs/DISTRIBUTION.md)을 확인하세요.
+기존 릴리스의 알파/클로즈/오픈 명칭은 당시의 배포 이력입니다. 당시 QA 예외·미완료 기록과 태그·설치파일은 유지합니다. 명칭 정리는 기존 베타의 정식 승인을 뜻하지 않습니다. [배포 기준과 이력](docs/DISTRIBUTION.md)을 확인하세요.
 
-## 사용과 업데이트
+## 설치와 업데이트
 
-- 부서별 폴더 연결, 저장 비밀번호, 자동 재연결, 창 닫기/완전 종료, 1.7.10 → 1.7.11 업데이트: [정식 1.x 사용 안내](docs/USER-GUIDE-1.x.md)
-- 정식/알파테스트 구분, 과거 태그, QA 단계와 게시 원칙: [배포와 소스 이력](docs/DISTRIBUTION.md)
-- 모든 설치파일과 체크섬: [GitHub Releases](https://github.com/droidbin/SMB-Manager-for-KCAA/releases)
+정식 1.x는 릴리스의 ZIP을 해제한 뒤 `Setup.exe`로 설치합니다. 포터블 실행은 지원하지 않습니다. 2.x 베타는 직원용 MSI와 해당 릴리스 안내를 따르세요. 관리자/서버 설치본은 직원 클라이언트 MSI에 포함되지 않습니다.
+
+1.7.12에서 2.0 베타 전환을 선택할 수 있습니다. 기존 앱의 “오픈베타” 표시는 베타를 뜻하는 이전 명칭이며, 화면과 채널 변경은 후속 설치본에서 적용합니다. 설치 전 업무 파일을 저장하고 공유폴더 문서·탐색기를 닫으세요.
+
+- [정식 1.x 사용 안내](docs/USER-GUIDE-1.x.md)
+- [GitHub Releases](https://github.com/droidbin/SMB-Manager-for-KCAA/releases)
 
 ## 소스와 빌드
 
