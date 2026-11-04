@@ -180,7 +180,7 @@ public static class BetaChannels
 {
     public const string Open = "open-beta", Closed = "closed-beta";
     public static bool Valid(string? channel) => channel is Open or Closed;
-    public static string Label(string channel) => channel == Closed ? "알파테스트" : "오픈베타";
+    public static string Label(string channel) => channel == Open ? "정식" : "베타";
 }
 public record BetaSelection(string Channel);
 public record BetaAdministrator(bool Administrator);

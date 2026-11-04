@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
@@ -11,9 +11,13 @@ public static class InstallCompletion
 {
     // SMB mappings belong to a logon session, not just the account SID.
     // Elevated/remoting installation success must not certify the normal desktop session.
-    public static bool IsInteractiveUserSession() => OperatingSystem.IsWindows()
-        && System.Diagnostics.Process.GetCurrentProcess().SessionId != 0
-        && !new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+    public static bool IsInteractiveUserSession()
+    {
+        if (!OperatingSystem.IsWindows() || !Environment.UserInteractive) return false;
+        if (System.Diagnostics.Process.GetCurrentProcess().SessionId == 0) return false;
+        var sid = WindowsIdentity.GetCurrent().User?.Value ?? "";
+        return sid is not ("" or "S-1-5-18" or "S-1-5-19" or "S-1-5-20");
+    }
     public static InstallCompletionResult Run(string expectedSid)
     {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException();

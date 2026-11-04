@@ -29,7 +29,7 @@ public static class LegacyMigration
     {
         var executableDirectory = Path.GetFullPath(AppContext.BaseDirectory).TrimEnd(Path.DirectorySeparatorChar);
         var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-        var allowed = new[] { "SMB Manager Client Internal Beta 1", "SMB Manager Internal Beta 1" }
+        var allowed = new[] { "SMB Manager", "SMB Manager 2.0", "SMB Manager Client Internal Beta 1", "SMB Manager Internal Beta 1" }
             .Select(p => Path.Combine(programFiles, p, "ClientDesktop"));
         if (!allowed.Any(p => string.Equals(p, executableDirectory, StringComparison.OrdinalIgnoreCase)))
             return new(true, "NotInstalled", "개발·미설치 실행: 구버전 정리를 실행하지 않음", [], [], []);
@@ -87,9 +87,12 @@ public static class LegacyMigration
                 var links = new[]
                 {
                     Path.Combine(locations.Desktop, "SMB Manager.lnk"),
+                    Path.Combine(locations.Desktop, "SMB Manager 클로즈베타 클라이언트.lnk"),
                     Path.Combine(locations.Startup, "SMB Manager.lnk"),
                     Path.Combine(locations.StartMenu, "Programs", "SMB Manager", "SMB Manager.lnk"),
-                    Path.Combine(locations.StartMenu, "Programs", "SMB Manager", "SMB Manager Uninstall.lnk")
+                    Path.Combine(locations.StartMenu, "Programs", "SMB Manager", "SMB Manager Uninstall.lnk"),
+                    Path.Combine(locations.StartMenu, "Programs", "SMB Manager Client Beta", "SMB Manager 클로즈베타 클라이언트.lnk"),
+                    Path.Combine(locations.StartMenu, "Programs", "SMB Manager", "SMB Manager 클로즈베타 클라이언트.lnk")
                 };
                 var linkTargets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var link in links)
@@ -163,7 +166,9 @@ public static class LegacyMigration
                     }
                 }
                 var menuDirectory=Path.Combine(locations.StartMenu,"Programs","SMB Manager");
-                try { EmptyDirectory(menuDirectory); }
+                try { EmptyDirectory(menuDirectory); }catch(Exception e) when(e is IOException or UnauthorizedAccessException) { retained.Add(menuDirectory); }
+                var betaMenu=Path.Combine(locations.StartMenu,"Programs","SMB Manager Client Beta");
+                try { EmptyDirectory(betaMenu); }
                 catch(Exception e) when(e is IOException or UnauthorizedAccessException) { retained.Add(menuDirectory); }
                 EmptyDirectory(updateRoot);
                 var completed = problems.Count == 0;

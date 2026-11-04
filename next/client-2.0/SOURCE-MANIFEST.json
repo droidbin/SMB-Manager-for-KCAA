@@ -11,7 +11,7 @@
     },
     {
       "path": "ClientDesktop\\BetaDialog.cs",
-      "sha256": "FF2AE1D601321AC22F9F65DE10E10B50BCAB91AFFB23A42476971B814E7A95D7"
+      "sha256": "853F66AC2C9F552668EF036BF7DD359780C5576CA8CE88BF9D601B3C94840021"
     },
     {
       "path": "ClientDesktop\\BugReportDialog.cs",
@@ -23,7 +23,7 @@
     },
     {
       "path": "ClientDesktop\\ClientForm.cs",
-      "sha256": "ABECF2CD58076CEFA09CAF68A4208385CCDC64E1EC54096FD8029EE09133C8DA"
+      "sha256": "5DB11EF1AB094DF61EC5A627EE0344E5191AE65DEB0F890F1CC61503BF148013"
     },
     {
       "path": "ClientDesktop\\ClientInstance.cs",
@@ -79,7 +79,7 @@
     },
     {
       "path": "ClientEngine\\InstallCompletion.cs",
-      "sha256": "4D59AE23C4A9760DBF8D10E94D1069AEB059D297871C1DB315ED725CF26B0C23"
+      "sha256": "248C82E811AE30EDCD794B0FF355B446E07510A68B01BFB0ED2CAA4B916EAF32"
     },
     {
       "path": "ClientEngine\\InstallerClientGate.cs",
@@ -87,7 +87,7 @@
     },
     {
       "path": "ClientEngine\\LegacyMigration.cs",
-      "sha256": "84924B585B7604BF55607C509EC81BB3DEDE8F7E1C213952E2C2823DECB5D01D"
+      "sha256": "C27DCC1E3D4DBBEA4FD29F051747F7C008F54B611B6C7A11B2F3DED5BFECB3BC"
     },
     {
       "path": "ClientEngine\\ManagedPolicy.cs",
@@ -139,7 +139,7 @@
     },
     {
       "path": "Contracts\\Protocol.cs",
-      "sha256": "29D97D35DD6177DAF598F71E2FFB907D93C48BF8F3228EF7115B2784589DE99F"
+      "sha256": "9AC04F3C85C911077F15233F98AAAB018ECA5F967045C6D27D85F50A0D5A15E6"
     },
     {
       "path": "Contracts\\Registration.cs",

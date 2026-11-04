@@ -34,13 +34,13 @@ internal sealed class BetaDialog:Form {
  async Task Run(Func<Task> action){if(busy)return;busy=true;channels.Enabled=check.Enabled=download.Enabled=install.Enabled=false;progress.Visible=true;try{await action();}catch(OperationCanceledException){}catch(Exception e){release=null;prepared=null;if(!IsDisposed){status.Text="업데이트를 확인하지 못했습니다";notes.Text=UiTheme.Error(e);progressText.Text="사내망 연결을 확인한 뒤 다시 확인을 눌러 주세요.";}}finally{busy=false;if(!IsDisposed){progress.Visible=false;channels.Enabled=check.Enabled=true;download.Enabled=release is not null&&prepared is null;install.Enabled=prepared is not null;}}}
  async Task Check(){
   prepared=null;release=null;status.Text="회사 업데이트를 확인하고 있습니다";progressText.Text="";var selected=(channels.SelectedItem as Choice)?.Id;var access=await agent.GetBetaAccess(stop.Token);if(IsDisposed)return;
-  channels.DataSource=access.Allowed.Select(c=>new Choice(c)).ToArray();channels.DisplayMember=nameof(Choice.Name);channels.SelectedItem=channels.Items.Cast<Choice>().FirstOrDefault(c=>c.Id==(selected??access.Selected))??channels.Items.Cast<Choice>().FirstOrDefault();
+  channels.DataSource=access.Allowed.OrderBy(c=>c==BetaChannels.Open?0:1).Select(c=>new Choice(c)).ToArray();channels.DisplayMember=nameof(Choice.Name);channels.SelectedItem=channels.Items.Cast<Choice>().FirstOrDefault(c=>c.Id==(selected??access.Selected))??channels.Items.Cast<Choice>().FirstOrDefault();
   if(channels.SelectedItem is not Choice choice){status.Text="등록 승인 후 업데이트할 수 있습니다";notes.Text="담당자가 이 PC의 등록을 승인하면 회사 업데이트가 표시됩니다.";return;}
   await agent.SelectBetaChannel(choice.Id,stop.Token);var found=await agent.GetBetaRelease(choice.Id,stop.Token);if(IsDisposed)return;
-  if(found is null){status.Text="최신 버전입니다.";notes.Text=choice.Name+"에 아직 배포된 업데이트가 없습니다.\r\n사내 시험에 참여 중이라면 담당자에게 채널을 확인해 주세요.";return;}
+  if(found is null){status.Text="최신 버전입니다.";notes.Text=$"{choice.Name} 채널에 아직 배포된 업데이트가 없습니다.\r\n업데이트 문의는 회사 전산 담당자에게 확인해 주세요.";return;}
   var comparison=BetaUpdate.Compare(found,installed,productVersion);status.Text=comparison switch{1=>"새 업데이트가 있습니다",0=>"최신 버전입니다.",-1=>"최신 버전입니다.",_=>"담당자의 버전 확인이 필요합니다"};
   // Unverifiable version metadata never enables an installation action.
-  release=comparison==1?found:null;notes.Text=$"{choice.Name}\r\n새 버전: {found.Version}\r\n파일 크기: {found.Size/1048576d:F1} MB\r\n\r\n{found.Notes}";progressText.Text=release is not null?"업데이트 받기 → 작업 저장 → 설치 진행":"";
+  release=comparison==1?found:null;notes.Text=$"{choice.Name} 채널\r\n새 버전: {found.Version}\r\n파일 크기: {found.Size/1048576d:F1} MB\r\n\r\n{found.Notes}";progressText.Text=release is not null?"업데이트 받기 → 작업 저장 → 설치 진행":"";
  }
  async Task Prepare(){
   var selected=release??throw new InvalidOperationException("업데이트를 먼저 확인해 주세요.");status.Text="업데이트 파일을 받고 있습니다";progressText.Text="다운로드한 파일도 함께 확인합니다. 창을 닫으면 받기를 취소합니다.";
@@ -48,5 +48,5 @@ internal sealed class BetaDialog:Form {
   var valid=false;if(File.Exists(target)){using var stream=new FileStream(target,FileMode.Open,FileAccess.Read,FileShare.Read);valid=stream.Length==selected.Size&&Convert.ToHexString(SHA256.HashData(stream)).Equals(selected.Sha256,StringComparison.OrdinalIgnoreCase);if(!valid){dir=Path.Combine(cache,selected.Sha256.ToLowerInvariant()+"-"+Guid.NewGuid().ToString("N"));SecretFile.PrivateDirectory(dir);target=Path.Combine(dir,selected.FileName);}}if(!valid)await agent.DownloadBeta(selected,target,stop.Token);
   if(IsDisposed)return;prepared=new(target,selected.Size,selected.Sha256);status.Text="업데이트 설치 준비가 끝났습니다";progressText.Text="공유폴더의 작업을 저장한 뒤 아래 설치 버튼을 누르세요. Windows 승인창이 나타날 수 있습니다.";
  }
- sealed record Choice(string Id){public string Name=>Id==BetaChannels.Closed?"사내 시험 · "+BetaChannels.Label(Id):"공개 시험 · 오픈베타";}
+ sealed record Choice(string Id){public string Name=>BetaChannels.Label(Id);}
 }
