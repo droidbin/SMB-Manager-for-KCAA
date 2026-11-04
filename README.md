@@ -4,7 +4,8 @@ Windows SMB 공유폴더를 부서별 Drive로 연결하고 연결 상태 점검
 
 | 구분 | 버전 | 다운로드 및 상태 |
 |---|---|---|
-| **정식** | **V2.0.5 · 직원 클라이언트** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
+| **정식** | **2.0.5 수정 r4 · 직원 클라이언트** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.5-patch-r4) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
+| **이전 정식(보존)** | **V2.0.5 build37-r1** | [기존 설치본과 다운로드 주소](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) 보존 |
 | **이전 베타(보존)** | **2.0.0-beta.5 · 클라이언트 build32-r1** | [베타 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) · 과거 예외 배포 기록, 신규 설치는 V2.0.5 권장 |
 
 ## 테스트와 배포
@@ -25,6 +26,8 @@ Windows SMB 공유폴더를 부서별 Drive로 연결하고 연결 상태 점검
 
 V2.0.5는 정식 업데이트로 제공됩니다. 1.7.12의 업데이트 확인에서 2.x 직원용 MSI를 받을 수 있으며, 기존 2.x는 회사 업데이트 경로를 이용합니다. 일부 기존 화면·바로가기의 알파테스트/오픈베타 명칭과 채널 키는 호환성을 위해 남아 있습니다. 이 표시는 현재 GitHub 릴리스의 정식 상태와 별개이며, 화면 정리는 후속 설치본에서 적용합니다. 설치 전 업무 파일을 저장하고 공유폴더 문서·탐색기를 닫으세요.
 
+수정 r4는 제품 표시 버전 **2.0.5**와 MSI 버전 **2.0.145**를 유지하고 내부 파일 버전만 **2.0.145.1**로 올렸습니다. 기존 2.0 정식 사용자는 앱의 **업데이트 → 다시 확인**에서 새 업데이트를 확인합니다. 설치 완료 세션 판정과 동일 MSI 버전의 실제 파일 교체도 수정했습니다. 기존 채널 선택·인증·부서별 접근 권한은 유지합니다.
+
 - [정식 1.x 사용 안내](docs/USER-GUIDE-1.x.md)
 - [GitHub Releases](https://github.com/droidbin/SMB-Manager-for-KCAA/releases)
 
@@ -34,7 +37,7 @@ V2.0.5 핵심 QA는 Windows 10/11 합계 **54/54개(100%)** 통과했습니다. 
 
 | 경로 | 내용 |
 |---|---|
-| [V2.0.5 직원 클라이언트 소스](https://github.com/droidbin/SMB-Manager-for-KCAA/tree/V2.0.5/next/client-2.0) | 검증된 빌드의 직접 C# 소스 38개와 해시 목록; 런타임·서명 도구는 별도이며 MSI 바이트 재현 보장은 아님 |
+| [2.0.5 수정 r4 직원 클라이언트 소스](https://github.com/droidbin/SMB-Manager-for-KCAA/tree/v2.0.5-patch-r4/next/client-2.0) | 검증된 빌드의 직접 C# 소스 39개와 해시 목록; 런타임·서명 도구는 별도이며 MSI 바이트 재현 보장은 아님 |
 | `src/legacy/` | 1.7.7~1.7.11 소스와 기존 문서·QA 기록 |
 | `assets/fonts/` | 중복을 정리한 공유 폰트와 제3자 안내 |
 | `tools/` | 소스 구성 검사와 기존 자산을 교체하지 않는 게시 도구 |
