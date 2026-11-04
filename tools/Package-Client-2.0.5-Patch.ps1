@@ -2,7 +2,7 @@ param(
     [string]$SourceCandidate = "C:\Users\Admin\Documents\Codex_Project\SMB Manager\next\internal-beta1\.local\beta5-admin-build21",
     [string]$CandidateRoot = "",
     [string]$DistDir = "",
-    [ValidatePattern("^[a-zA-Z0-9-]+$")][string]$Revision = "r3"
+    [ValidatePattern("^[a-zA-Z0-9-]+$")][string]$Revision = "r4"
 )
 $ErrorActionPreference = 'Stop'
 
@@ -41,7 +41,7 @@ $clientPayload = Join-Path $payload 'ClientDesktop'
 $clientProject = Join-Path $repo 'next/client-2.0/ClientDesktop/ClientDesktop.csproj'
 
 Write-Host "Publishing ClientDesktop..."
-& dotnet publish $clientProject -c Release -r win-x64 --self-contained false --ignore-failed-sources -p:NuGetAudit=false "-p:SmbOutputRoot=$work" -p:FileVersion=2.0.145.0 -p:InformationalVersion=2.0.5+patch.$Revision -p:AppHostDotNetSearch=AppRelative -p:AppHostRelativeDotNet=../runtime -o $clientPayload
+& dotnet publish $clientProject -c Release -r win-x64 --self-contained false --ignore-failed-sources -p:NuGetAudit=false "-p:SmbOutputRoot=$work" -p:FileVersion=2.0.145.1 -p:InformationalVersion=2.0.5+patch.$Revision -p:AppHostDotNetSearch=AppRelative -p:AppHostRelativeDotNet=../runtime -o $clientPayload
 if ($LASTEXITCODE -ne 0) { throw 'Client publish failed' }
 
 Get-ChildItem -LiteralPath $clientPayload -Filter '*.pdb' | Remove-Item

@@ -158,8 +158,8 @@
       "sha256": "177C7ED78342662848AC7D4A55C6CA65A20B829E7DB7A5D5C52FB70F0ACC472A"
     }
   ],
-  "fileVersion": "2.0.145.0",
+  "fileVersion": "2.0.145.1",
   "scope": "Current patch source inputs only. Installer identity and dedicated Windows 10/11 QA are recorded separately; this manifest is not release approval.",
   "version": "2.0.5",
-  "informationalVersion": "2.0.5+patch.r3"
+  "informationalVersion": "2.0.5+patch.r4"
 }

@@ -12,11 +12,26 @@
 
 | 구분 | 배포 | 상태 |
 |---|---|---|
-| 정식 | [V2.0.5 · 직원 클라이언트](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) | 현재 정식 Latest · 핵심 QA 54/54 |
+| 정식 | [2.0.5 수정 r4 · 직원 클라이언트](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.5-patch-r4) | 현재 정식 Latest · 내부 파일 버전 2.0.145.1 · 핵심 QA 54/54 |
+| 이전 정식(보존) | [V2.0.5 build37-r1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) | 기존 태그·자산·다운로드 주소 보존 |
 | 이전 정식(보존) | [V1.7.12](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) | 기존 자산과 복구 경로 보존 |
 | 이전 베타(보존) | [2.0 build32-r1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) | 과거 예외 배포 이력 |
 
-## V2.0.5 정식 검증
+## 2.0.5 수정 r4 업데이트 인식
+
+사용자 승인에 따라 제품 표시 버전 2.0.5와 MSI 버전 2.0.145를 유지하고 내부 파일 버전만 2.0.145.1로 올렸습니다. 기존 정식 2.0.145.0의 변경 없는 비교 코드가 새 업데이트로 판단하며, 패치 설치 후에는 최신 상태로 판단합니다. 더 높은 내부 빌드는 다운그레이드로 유도하지 않습니다.
+
+Windows 10/11 전용 VM에 원본 build37 MSI를 실제 설치한 뒤, GitHub에서 재다운로드·검증한 동일 설치본을 인증된 시험 카탈로그로 받아 실제 업데이트했습니다. 원본 설치 DLL·파일 버전, 새 설치 DLL·버전, 등록 필드 보존, 실제 SMB 매핑과 별도 서버의 인증 계정·파일 작업을 확인했습니다. 사전 vm 및 최종 delivery/public 게이트와 고정 세부 원장 54/54(100%)를 검토했습니다. 변경 영향이 없는 권한·복구와 r3 재실행 결과는 원래 해시·소스 적용 근거를 연결해 재사용했습니다.
+
+처음에는 배포 QA 미완료를 고지한 정확한 r4 베타 게시를 사용자에게 별도 승인받았습니다. 이후 남은 전달 QA를 실제 수행해 통과했으며 과거 예외를 QA Pass로 바꾸지 않았습니다. 시험 서버 중지로 발생한 첫 전달 조회 실패와 불완전했던 첫 운영 백업 기록도 보존했습니다.
+
+[정식 설치본](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.5-patch-r4) · [r4 직접 소스와 해시](https://github.com/droidbin/SMB-Manager-for-KCAA/tree/v2.0.5-patch-r4/next/client-2.0)
+
+운영 호환 카탈로그도 같은 r4로 반영했고 허용된 운영 HTTPS 전체 다운로드의 해시·서명을 확인했습니다. 비허용 closed-beta의 403과 기존 기기 배정·권한·서버 실행을 보존했습니다. [정확한 검증 범위와 실패 이력](UPDATE-RECOGNITION-2.0.5-R4.md)을 참고하세요.
+
+관리자/서버 앱 및 별도 PC자산 조사 통합은 포함하지 않습니다. 실제 UAC 비활성 데스크톱·새 재부팅·확장 전체 캠페인의 직접 통과를 주장하지 않습니다. [이전 패치 검토와 실패 이력](PATCH-2.0.5-REVIEW-2026-11-04.md)도 보존합니다.
+
+## 이전 V2.0.5 build37 정식 검증
 
 2026-11-04 직원 클라이언트 V2.0.5(build37-r1, 파일 버전 2.0.145.0)를 정식 Latest로 전환했습니다. 핵심 필수 세부 검사 54/54개(100%)와 최종 전달 검사를 통과했습니다. GitHub 재다운로드, 두 전용 VM의 실제 구버전→전달된 설치본 업데이트, 별도 SMB 서버 계정·파일 작업, 운영 서버의 허용된 인증 전체 다운로드를 검증했습니다. 영향 없는 기존 설치 UI·전환·권한·복구 결과는 원래 해시와 재사용 근거를 유지합니다.
 

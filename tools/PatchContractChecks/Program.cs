@@ -23,3 +23,10 @@ Check(BetaChannels.DisplayChoices(new("closed-beta", ["open-beta", "closed-beta"
 Check(BetaChannels.DisplayChoices(new("closed-beta", ["open-beta"], "", false)).SequenceEqual(["open-beta"]), "Revoked selection cannot broaden access");
 Check(BetaChannels.DisplayChoices(new("open-beta", [], "", false)).Length == 0, "Unapproved device gets no choices");
 Console.WriteLine($"PASS: {count} pure regression checks; no client runtime or SMB actions.");
+
+var patch = new BetaRelease("open-beta", "2.0.5", "SMB-Manager-Client-2.0.5-Patch-r4-x64.msi", 1, new string('A', 64), "", "2.0.145.1");
+Check(BetaUpdate.Compare(patch, "2.0.145.0", "2.0.5") == 1, "Existing 2.0.5 stable discovers file revision .1");
+Check(BetaUpdate.Compare(patch, "2.0.145.1", "2.0.5") == 0, "Installed patch is not repeatedly offered");
+Check(BetaUpdate.Compare(patch, "2.0.146.0", "2.0.5") == -1, "Higher internal build never downgraded");
+Check(patch.Version == "2.0.5", "Marketing version unchanged");
+Console.WriteLine($"PASS: {count} total pure regression checks.");
