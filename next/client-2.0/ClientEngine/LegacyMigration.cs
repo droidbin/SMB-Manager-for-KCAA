@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -169,7 +169,7 @@ public static class LegacyMigration
                 try { EmptyDirectory(menuDirectory); }catch(Exception e) when(e is IOException or UnauthorizedAccessException) { retained.Add(menuDirectory); }
                 var betaMenu=Path.Combine(locations.StartMenu,"Programs","SMB Manager Client Beta");
                 try { EmptyDirectory(betaMenu); }
-                catch(Exception e) when(e is IOException or UnauthorizedAccessException) { retained.Add(menuDirectory); }
+                catch(Exception e) when(e is IOException or UnauthorizedAccessException) { retained.Add(betaMenu); }
                 EmptyDirectory(updateRoot);
                 var completed = problems.Count == 0;
                 var result = new LegacyMigrationResult(completed, completed ? removed.Count > 0 ? "Removed" : "NoLegacy" : "Pending",

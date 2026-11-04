@@ -1,17 +1,31 @@
-﻿param(
+param(
     [string]$SourceCandidate = "C:\Users\Admin\Documents\Codex_Project\SMB Manager\next\internal-beta1\.local\beta5-admin-build21",
-    [string]$CandidateRoot = "C:\Users\Admin\Documents\Gemini_Project\SMB-Manager-for-KCAA\.local\client-2.0.5-patch-work",
-    [string]$DistDir = "C:\Users\Admin\Documents\Gemini_Project\SMB-Manager-for-KCAA\dist"
+    [string]$CandidateRoot = "",
+    [string]$DistDir = "",
+    [ValidatePattern("^[a-zA-Z0-9-]+$")][string]$Revision = "r3"
 )
 $ErrorActionPreference = 'Stop'
 
+$repo = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
+if (!$CandidateRoot) { $CandidateRoot = Join-Path $repo ('.local/client-2.0.5-patch-' + $Revision + '-' + [Guid]::NewGuid().ToString('N')) }
+if (!$DistDir) { $DistDir = Join-Path $repo 'dist' }
 $parent = [IO.Path]::GetFullPath($SourceCandidate)
 $work = [IO.Path]::GetFullPath($CandidateRoot)
 $codexInternalBeta1 = "C:\Users\Admin\Documents\Codex_Project\SMB Manager\next\internal-beta1"
 
-if (Test-Path -LiteralPath $work) {
-    Remove-Item -LiteralPath $work -Recurse -Force
+# Never delete caller-supplied directories or overwrite a previous candidate.
+$allowed = [IO.Path]::GetFullPath((Join-Path $repo '.local')) + [IO.Path]::DirectorySeparatorChar
+if (!$work.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) { throw 'CandidateRoot must be a new path under the repository .local directory.' }
+if (Test-Path -LiteralPath $work) { throw 'Candidate already exists; preserve it and use a new directory.' }
+foreach ($target in @($work, [IO.Path]::GetFullPath($DistDir))) {
+    $ancestor = $target
+    while ($ancestor) {
+        if ((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Reparse-point output paths are not permitted.' }
+        $ancestor = [IO.Path]::GetDirectoryName($ancestor)
+    }
 }
+$msiName = "SMB-Manager-Client-2.0.5-Patch-$Revision-x64.msi"
+if (Test-Path -LiteralPath (Join-Path $DistDir $msiName)) { throw 'Distribution filename already exists; select a new revision.' }
 
 $sourcePayload = Join-Path $parent 'payload'
 $parentManifest = Get-Content -LiteralPath (Join-Path $parent 'artifacts/candidate-manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -24,10 +38,10 @@ $out = Join-Path $work 'artifacts'
 New-Item -ItemType Directory -Path $payload, $out -Force | Out-Null
 
 $clientPayload = Join-Path $payload 'ClientDesktop'
-$clientProject = "C:\Users\Admin\Documents\Gemini_Project\SMB-Manager-for-KCAA\next\client-2.0\ClientDesktop\ClientDesktop.csproj"
+$clientProject = Join-Path $repo 'next/client-2.0/ClientDesktop/ClientDesktop.csproj'
 
 Write-Host "Publishing ClientDesktop..."
-& dotnet publish $clientProject -c Release -r win-x64 --self-contained false --ignore-failed-sources -p:NuGetAudit=false "-p:SmbOutputRoot=$work" -p:FileVersion=2.0.146.0 -p:InformationalVersion=2.0.5+qa.38 -p:AppHostDotNetSearch=AppRelative -p:AppHostRelativeDotNet=../runtime -o $clientPayload
+& dotnet publish $clientProject -c Release -r win-x64 --self-contained false --ignore-failed-sources -p:NuGetAudit=false "-p:SmbOutputRoot=$work" -p:FileVersion=2.0.145.0 -p:InformationalVersion=2.0.5+patch.$Revision -p:AppHostDotNetSearch=AppRelative -p:AppHostRelativeDotNet=../runtime -o $clientPayload
 if ($LASTEXITCODE -ne 0) { throw 'Client publish failed' }
 
 Get-ChildItem -LiteralPath $clientPayload -Filter '*.pdb' | Remove-Item
@@ -76,11 +90,11 @@ $license = Join-Path $work 'ClientNotice.rtf'
 
 $doc = New-Object Xml.XmlDocument
 $wixHeader = '<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">'
-$wixPackage = '<Package Name="SMB Manager Client (2.0.5)" Manufacturer="SMB Manager Project" Version="2.0.146" Language="1042" Codepage="949" UpgradeCode="7D2BAF09-39A3-481C-81EE-1AFC7F79CA10" Scope="perMachine">'
+$wixPackage = '<Package Name="SMB Manager Client (2.0.5)" Manufacturer="SMB Manager Project" Version="2.0.145" Language="1042" Codepage="949" UpgradeCode="7D2BAF09-39A3-481C-81EE-1AFC7F79CA10" Scope="perMachine">'
 $wixSummary = '<SummaryInformation Description="SMB Manager 2.0.5 Client"/>'
-$wixUpgrade = '<MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of SMB Manager Client is already installed."/>'
+$wixUpgrade = '<MajorUpgrade AllowSameVersionUpgrades="yes" Schedule="afterInstallExecute" DowngradeErrorMessage="A newer version of SMB Manager Client is already installed."/>'
 $wixMedia = '<MediaTemplate EmbedCab="yes"/>'
-$wixProp = '<Property Id="ARPCOMMENTS" Value="SMB Manager 2.0.5"/>'
+$wixProp = '<Property Id="ARPCOMMENTS" Value="SMB Manager 2.0.5"/><Property Id="REINSTALLMODE" Value="emus"/>'
 $wixDir = '<StandardDirectory Id="ProgramFiles64Folder"><Directory Id="INSTALLFOLDER" Name="SMB Manager Client Internal Beta 1"/></StandardDirectory>'
 $wixFeat = '<Feature Id="Complete" Title="SMB Manager Client" Level="1"/>'
 $wixUI = '<ui:WixUI Id="WixUI_Minimal"/>'
@@ -147,7 +161,7 @@ foreach ($id in @('ClientShortcuts', 'ClientDesktopShortcut')) {
     [void]$feature.AppendChild((Element 'ComponentRef' @{Id = $id}))
 }
 
-[void]$package.AppendChild((Element 'Icon' @{Id = 'ClientIcon'; SourceFile = "C:\Users\Admin\Documents\Gemini_Project\SMB-Manager-for-KCAA\next\client-2.0\Assets\app-icon.ico"}))
+[void]$package.AppendChild((Element 'Icon' @{Id = 'ClientIcon'; SourceFile = (Join-Path $repo 'next/client-2.0/Assets/app-icon.ico')}))
 [void]$package.AppendChild((Element 'Property' @{Id = 'ARPPRODUCTICON'; Value = 'ClientIcon'}))
 [void]$package.AppendChild((Element 'WixVariable' @{Id = 'WixUILicenseRtf'; Value = $license}))
 
@@ -171,10 +185,13 @@ Add-ClientLogonStartup -Document $doc -FileId $clientId
 . (Join-Path $codexInternalBeta1 'Installer/Add-WorkPortalShortcut.ps1')
 Add-WorkPortalShortcut -Document $doc -Role client
 
+# Keep the shared transactional shutdown and late upgrade schedule. REINSTALLMODE
+# e replaces equal/older payload files without downgrading newer runtime files.
+
 $wxs = Join-Path $work 'Client.wxs'
 $doc.Save($wxs)
 
-$msiName = "SMB-Manager-Client-2.0.5-Patch-x64.msi"
+
 $msi = Join-Path $out $msiName
 
 Write-Host "Building MSI with WiX..."
@@ -190,7 +207,11 @@ Write-Host "Signing final MSI..."
 
 New-Item -ItemType Directory -Path $DistDir -Force | Out-Null
 $finalMsi = Join-Path $DistDir $msiName
-Copy-Item -LiteralPath $msi -Destination $finalMsi -Force
+# FileMode.CreateNew also prevents a race from replacing an existing release file.
+$destinationStream = [IO.File]::Open($finalMsi, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+try { $sourceStream = [IO.File]::OpenRead($msi); try { $sourceStream.CopyTo($destinationStream) } finally { $sourceStream.Dispose() } } finally { $destinationStream.Dispose() }
+$signature = Get-AuthenticodeSignature -LiteralPath $finalMsi
+if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -ne 'CN=KCAA(LEE HYEONGBIN)') { throw 'Final MSI signature verification failed.' }
 
 $hash = (Get-FileHash -LiteralPath $finalMsi -Algorithm SHA256).Hash
 Write-Host "==========================================" -ForegroundColor Green

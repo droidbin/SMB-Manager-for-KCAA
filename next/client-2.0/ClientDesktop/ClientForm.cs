@@ -76,7 +76,7 @@ internal sealed class ClientForm:Form {
      if(!installed.UserSessionCompleted){
       if(!InstallCompletion.IsInteractiveUserSession()){installPending=true;hint.Text="직원 앱은 바탕화면 또는 시작 메뉴에서 실행해 설치를 마무리해 주세요.";UpdateScreen();return;}
       var sid=System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value;
-      installed=await Task.Run(()=>InstallCompletion.Run(sid));if(installed.Completed)installed=installed with{UserSessionCompleted=true};Wire.Save(completion,installed);
+      installed=await Task.Run(()=>InstallCompletion.Run(sid));Wire.Save(completion,installed);
       if(!installed.Completed){installPending=true;hint.Text=installed.Message;UpdateScreen();return;}
      }
     }
@@ -91,8 +91,9 @@ internal sealed class ClientForm:Form {
  static bool ClientAgentServerEquals(string a,string b)=>Uri.Compare(Wire.LocalUrl(a),Wire.LocalUrl(b),UriComponents.AbsoluteUri,UriFormat.SafeUnescaped,StringComparison.OrdinalIgnoreCase)==0;
  async Task RetryInstallCompletion(){
   if(legacyBusy||agent is not null)return;
+  if(!InstallCompletion.IsInteractiveUserSession()){hint.Text="바탕화면 또는 시작 메뉴에서 앱을 일반 실행한 뒤 다시 시도해 주세요.";UpdateScreen();return;}
   if(MessageBox.Show(this,"공유폴더의 문서와 탐색기 창을 저장하고 닫았나요? 이 Windows 사용자의 SMB 연결을 해제하고 회사 Drive의 저장 계정을 정리합니다.","설치 마무리",MessageBoxButtons.YesNo,MessageBoxIcon.Warning)!=DialogResult.Yes)return;
-  legacyBusy=true;try{var sid=System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value;var result=await Task.Run(()=>InstallCompletion.Run(sid));if(result.Completed)result=result with{UserSessionCompleted=true};Wire.Save(Path.Combine(stateDir,"install-completion.json"),result);installPending=!result.Completed;if(!result.Completed){hint.Text=result.Message;return;}await InitializeClient(false);}catch(Exception e){hint.Text=UiTheme.Error(e);}finally{legacyBusy=false;UpdateScreen();}
+  legacyBusy=true;try{var sid=System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value;var result=await Task.Run(()=>InstallCompletion.Run(sid));Wire.Save(Path.Combine(stateDir,"install-completion.json"),result);installPending=!result.Completed;if(!result.Completed){hint.Text=result.Message;return;}await InitializeClient(false);}catch(Exception e){hint.Text=UiTheme.Error(e);}finally{legacyBusy=false;UpdateScreen();}
  }
  async Task ShowSettings(){
   if(changingServer||registering||legacyBusy)return;

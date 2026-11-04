@@ -6,14 +6,26 @@ namespace SmbManager.Local.Client;
 
 public sealed partial class ClientAgent
 {
-    public async Task<BetaAccess> GetBetaAccess(CancellationToken ct) =>
-        await http.GetFromJsonAsync<BetaAccess>("api/client/beta/channels", Wire.Json, ct) ?? throw new InvalidDataException("채널 응답이 없습니다.");
+    public async Task<BetaAccess> GetBetaAccess(CancellationToken ct)
+    {
+        using var response = await http.GetAsync("api/client/updates/channels", ct);
+        // Only a missing protocol falls back. Never bypass authentication or approval errors.
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            return await http.GetFromJsonAsync<BetaAccess>("api/client/beta/channels", Wire.Json, ct)
+                ?? throw new InvalidDataException("채널 응답이 없습니다.");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<BetaAccess>(Wire.Json, ct)
+            ?? throw new InvalidDataException("채널 응답이 없습니다.");
+    }
+    private static string UpdatePath(string channel) => BetaChannels.Valid(channel)
+        ? (BetaChannels.Current(channel) ? "api/client/updates/" : "api/client/beta/")
+        : throw new ArgumentException("채널이 올바르지 않습니다.");
     public async Task<BetaAccess> SelectBetaChannel(string channel, CancellationToken ct) =>
-        await Wire.Read<BetaAccess>(await http.PostAsJsonAsync("api/client/beta/selection", new BetaSelection(channel), Wire.Json, ct), ct);
+        await Wire.Read<BetaAccess>(await http.PostAsJsonAsync(UpdatePath(channel) + "selection", new BetaSelection(channel), Wire.Json, ct), ct);
     public async Task<BetaRelease?> GetBetaRelease(string channel, CancellationToken ct)
     {
         if (!BetaChannels.Valid(channel)) throw new ArgumentException("채널이 올바르지 않습니다.");
-        using var response = await http.GetAsync("api/client/beta/releases/" + channel, ct);
+        using var response = await http.GetAsync(UpdatePath(channel) + "releases/" + channel, ct);
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
         response.EnsureSuccessStatusCode();
         var release = await response.Content.ReadFromJsonAsync<BetaRelease>(Wire.Json, ct) ?? throw new InvalidDataException("배포 응답이 없습니다.");
@@ -32,7 +44,7 @@ public sealed partial class ClientAgent
         {
             using var client = Wire.Http(Identity.Url, device: Identity.DeviceKey);
             client.Timeout = TimeSpan.FromMinutes(15);
-            using var response = await client.GetAsync("api/client/beta/download/" + release.Channel, HttpCompletionOption.ResponseHeadersRead, ct);
+            using var response = await client.GetAsync(UpdatePath(release.Channel) + "download/" + release.Channel, HttpCompletionOption.ResponseHeadersRead, ct);
             response.EnsureSuccessStatusCode();
             await using var source = await response.Content.ReadAsStreamAsync(ct);
             await using (var output = new FileStream(temp, FileMode.CreateNew, FileAccess.Write, FileShare.None))

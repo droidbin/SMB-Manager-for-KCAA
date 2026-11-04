@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using SmbManager.Local;
 using SmbManager.Local.Client;
@@ -34,8 +34,9 @@ internal sealed class BetaDialog:Form {
  async Task Run(Func<Task> action){if(busy)return;busy=true;channels.Enabled=check.Enabled=download.Enabled=install.Enabled=false;progress.Visible=true;try{await action();}catch(OperationCanceledException){}catch(Exception e){release=null;prepared=null;if(!IsDisposed){status.Text="업데이트를 확인하지 못했습니다";notes.Text=UiTheme.Error(e);progressText.Text="사내망 연결을 확인한 뒤 다시 확인을 눌러 주세요.";}}finally{busy=false;if(!IsDisposed){progress.Visible=false;channels.Enabled=check.Enabled=true;download.Enabled=release is not null&&prepared is null;install.Enabled=prepared is not null;}}}
  async Task Check(){
   prepared=null;release=null;status.Text="회사 업데이트를 확인하고 있습니다";progressText.Text="";var selected=(channels.SelectedItem as Choice)?.Id;var access=await agent.GetBetaAccess(stop.Token);if(IsDisposed)return;
-  channels.DataSource=access.Allowed.OrderBy(c=>c==BetaChannels.Open?0:1).Select(c=>new Choice(c)).ToArray();channels.DisplayMember=nameof(Choice.Name);channels.SelectedItem=channels.Items.Cast<Choice>().FirstOrDefault(c=>c.Id==(selected??access.Selected))??channels.Items.Cast<Choice>().FirstOrDefault();
+  channels.DataSource=BetaChannels.DisplayChoices(access).Select(c=>new Choice(c)).ToArray();channels.DisplayMember=nameof(Choice.Name);channels.SelectedItem=channels.Items.Cast<Choice>().FirstOrDefault(c=>c.Id==(selected??access.Selected))??channels.Items.Cast<Choice>().FirstOrDefault();
   if(channels.SelectedItem is not Choice choice){status.Text="등록 승인 후 업데이트할 수 있습니다";notes.Text="담당자가 이 PC의 등록을 승인하면 회사 업데이트가 표시됩니다.";return;}
+  hint.Text=$"현재 버전: {productVersion}\n"+(BetaChannels.Current(choice.Id)?"회사가 허용한 업데이트만 확인할 수 있습니다.":"현재 서버는 이전 베타 채널을 제공합니다. 정식 채널은 서버 업데이트 후 표시됩니다.");
   await agent.SelectBetaChannel(choice.Id,stop.Token);var found=await agent.GetBetaRelease(choice.Id,stop.Token);if(IsDisposed)return;
   if(found is null){status.Text="최신 버전입니다.";notes.Text=$"{choice.Name} 채널에 아직 배포된 업데이트가 없습니다.\r\n업데이트 문의는 회사 전산 담당자에게 확인해 주세요.";return;}
   var comparison=BetaUpdate.Compare(found,installed,productVersion);status.Text=comparison switch{1=>"새 업데이트가 있습니다",0=>"최신 버전입니다.",-1=>"최신 버전입니다.",_=>"담당자의 버전 확인이 필요합니다"};

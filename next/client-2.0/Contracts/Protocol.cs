@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -178,9 +178,19 @@ public record DepartmentAccountChange(string Department,string ExpectedAccount,s
 
 public static class BetaChannels
 {
-    public const string Open = "open-beta", Closed = "closed-beta";
-    public static bool Valid(string? channel) => channel is Open or Closed;
-    public static string Label(string channel) => channel == Open ? "정식" : "베타";
+    public const string Stable = "stable", Beta = "beta", Open = "open-beta", Closed = "closed-beta";
+    public static bool Current(string? channel) => channel is Stable or Beta;
+    public static bool Valid(string? channel) => Current(channel) || channel is Open or Closed;
+    public static string Label(string channel) => channel == Stable ? "정식" : "베타";
+    // Legacy catalogs remain beta. Preserve their selected key and access restrictions.
+    public static string[] DisplayChoices(BetaAccess access)
+    {
+        var current = access.Allowed.Where(Current).Distinct().OrderBy(c => c == Stable ? 0 : 1).ToArray();
+        if (current.Length > 0) return current;
+        var legacy = access.Allowed.Where(c => c is Open or Closed).Distinct().ToArray();
+        var selected = legacy.Contains(access.Selected) ? access.Selected : legacy.FirstOrDefault();
+        return selected is null ? [] : [selected];
+    }
 }
 public record BetaSelection(string Channel);
 public record BetaAdministrator(bool Administrator);

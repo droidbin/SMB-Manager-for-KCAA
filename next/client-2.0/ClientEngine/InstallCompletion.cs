@@ -15,9 +15,21 @@ public static class InstallCompletion
     {
         if (!OperatingSystem.IsWindows() || !Environment.UserInteractive) return false;
         if (System.Diagnostics.Process.GetCurrentProcess().SessionId == 0) return false;
-        var sid = WindowsIdentity.GetCurrent().User?.Value ?? "";
-        return sid is not ("" or "S-1-5-18" or "S-1-5-19" or "S-1-5-20");
+        using var identity = WindowsIdentity.GetCurrent();
+        var sid = identity.User?.Value ?? "";
+        if (sid is "" or "S-1-5-18" or "S-1-5-19" or "S-1-5-20") return false;
+        // A full linked token is a separate UAC logon session. A default token
+        // also covers administrators with UAC disabled: their desktop is valid.
+        var tokenRead = GetTokenInformation(identity.AccessToken.DangerousGetHandle(), 18,
+            out var elevationType, sizeof(int), out var returned)
+            && returned == sizeof(int);
+        return InstallSessionRules.CanComplete(Environment.UserInteractive,
+            System.Diagnostics.Process.GetCurrentProcess().SessionId, sid, tokenRead, elevationType);
     }
+    [DllImport("advapi32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetTokenInformation(IntPtr token, int informationClass,
+        out int information, int length, out int returnedLength);
     public static InstallCompletionResult Run(string expectedSid)
     {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException();

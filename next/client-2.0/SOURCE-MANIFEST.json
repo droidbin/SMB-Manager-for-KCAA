@@ -1,17 +1,9 @@
 {
-  "buildRevision": 37,
+  "buildRevision": 38,
   "directCsSources": [
     {
-      "path": "UiDiagnostics.cs",
-      "sha256": "F2685173B18354B6477BCB0F8817C0AEDB89B08C0F6B33256202C2DC013D9F25"
-    },
-    {
-      "path": "UiTheme.cs",
-      "sha256": "177C7ED78342662848AC7D4A55C6CA65A20B829E7DB7A5D5C52FB70F0ACC472A"
-    },
-    {
       "path": "ClientDesktop\\BetaDialog.cs",
-      "sha256": "853F66AC2C9F552668EF036BF7DD359780C5576CA8CE88BF9D601B3C94840021"
+      "sha256": "6409708B10276547FEC08ABC0FFAF7DEE13E5A94D6F3AAEB6580E4107EA70A18"
     },
     {
       "path": "ClientDesktop\\BugReportDialog.cs",
@@ -23,7 +15,7 @@
     },
     {
       "path": "ClientDesktop\\ClientForm.cs",
-      "sha256": "5DB11EF1AB094DF61EC5A627EE0344E5191AE65DEB0F890F1CC61503BF148013"
+      "sha256": "C7CCB818B2CC30777806E79758721DD9A19C189DC903DE159B33809903DE0EA2"
     },
     {
       "path": "ClientDesktop\\ClientInstance.cs",
@@ -50,6 +42,10 @@
       "sha256": "6CF9E308FF2C67E8F77A213ABE20813EEF512E2EC442A0A3DFFE22A49C11A1BC"
     },
     {
+      "path": "ClientEngine/InstallSessionRules.cs",
+      "sha256": "F1DFF2F343D3D9D8ADAF89AD5E212884BA63C4D73A5DF3FF10FE78B76A0B28FA"
+    },
+    {
       "path": "ClientEngine\\AccountTransition.cs",
       "sha256": "3EF657335C84F50C4FA985AADEA8F1FDE7EF7943852E8B5D8C532E456A23CED9"
     },
@@ -63,7 +59,7 @@
     },
     {
       "path": "ClientEngine\\BetaClient.cs",
-      "sha256": "236C68EE7D55A9FA1BA57749E394A65088F261A2FD85A36D842384B4F7A5BF1E"
+      "sha256": "9B2E4A8F358D23CBE5BDF8664688258359A86F1070BED007C876BD144D60AC62"
     },
     {
       "path": "ClientEngine\\CanarySensor.cs",
@@ -79,7 +75,7 @@
     },
     {
       "path": "ClientEngine\\InstallCompletion.cs",
-      "sha256": "248C82E811AE30EDCD794B0FF355B446E07510A68B01BFB0ED2CAA4B916EAF32"
+      "sha256": "0E752820365D12DF7B76A43F355F925A9952A16E65CF46BF21B5AF592B81776C"
     },
     {
       "path": "ClientEngine\\InstallerClientGate.cs",
@@ -87,7 +83,7 @@
     },
     {
       "path": "ClientEngine\\LegacyMigration.cs",
-      "sha256": "C27DCC1E3D4DBBEA4FD29F051747F7C008F54B611B6C7A11B2F3DED5BFECB3BC"
+      "sha256": "EA74070A875167A255016762C115543CC64E3D4BC1DE21A3A6558B2423E19FDC"
     },
     {
       "path": "ClientEngine\\ManagedPolicy.cs",
@@ -139,7 +135,7 @@
     },
     {
       "path": "Contracts\\Protocol.cs",
-      "sha256": "9AC04F3C85C911077F15233F98AAAB018ECA5F967045C6D27D85F50A0D5A15E6"
+      "sha256": "31BFB0FF2526BEDDBB77F27423C7DBFBE9EA61866C6C81BB819FE5208AF3F090"
     },
     {
       "path": "Contracts\\Registration.cs",
@@ -152,9 +148,18 @@
     {
       "path": "Contracts\\ServerStartupReadiness.cs",
       "sha256": "F68481B5805C882893CB83DD634191C297AF1168E07A2635F8E8BAF418727550"
+    },
+    {
+      "path": "UiDiagnostics.cs",
+      "sha256": "F2685173B18354B6477BCB0F8817C0AEDB89B08C0F6B33256202C2DC013D9F25"
+    },
+    {
+      "path": "UiTheme.cs",
+      "sha256": "177C7ED78342662848AC7D4A55C6CA65A20B829E7DB7A5D5C52FB70F0ACC472A"
     }
   ],
   "fileVersion": "2.0.145.0",
-  "scope": "Exact 38 direct C# sources used to compile the client/engine/contracts. Version metadata specified by build properties. Runtime and signed installer verification recorded in release assets.",
-  "version": "2.0.5"
+  "scope": "Current patch source inputs only. Installer identity and dedicated Windows 10/11 QA are recorded separately; this manifest is not release approval.",
+  "version": "2.0.5",
+  "informationalVersion": "2.0.5+patch.r3"
 }
