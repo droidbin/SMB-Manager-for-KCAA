@@ -12,8 +12,9 @@
 
 | 구분 | 배포 | 상태 |
 |---|---|---|
-| 정식 | [V1.7.12](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) | 현재 정식 Latest |
-| 베타 | [2.0 build32-r1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) | 사내 시험용, 정식 전환 전 |
+| 정식 | [V2.0.5 · 직원 클라이언트](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) | 현재 정식 Latest · 핵심 QA 54/54 |
+| 이전 정식(보존) | [V1.7.12](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) | 기존 자산과 복구 경로 보존 |
+| 이전 베타(보존) | [2.0 build32-r1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) | 과거 예외 배포 이력 |
 
 ## V2.0.5 정식 검증
 
