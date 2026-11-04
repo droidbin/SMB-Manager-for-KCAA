@@ -4,8 +4,8 @@ Windows SMB 공유폴더를 부서별 Drive로 연결하고 연결 상태 점검
 
 | 구분 | 버전 | 다운로드 및 상태 |
 |---|---|---|
-| **정식** | **V1.7.12** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
-| **베타** | **2.0.0-beta.5 · 클라이언트 build32-r1** | [베타 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) · 사내 테스트용, 정식 전환 전 |
+| **정식** | **V2.0.5 · 직원 클라이언트** | [정식 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) · [Latest](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/latest) |
+| **이전 베타(보존)** | **2.0.0-beta.5 · 클라이언트 build32-r1** | [베타 릴리스](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) · 과거 예외 배포 기록, 신규 설치는 V2.0.5 권장 |
 
 ## 테스트와 배포
 
@@ -21,17 +21,20 @@ Windows SMB 공유폴더를 부서별 Drive로 연결하고 연결 상태 점검
 
 ## 설치와 업데이트
 
-정식 1.x는 릴리스의 ZIP을 해제한 뒤 `Setup.exe`로 설치합니다. 포터블 실행은 지원하지 않습니다. 2.x 베타는 직원용 MSI와 해당 릴리스 안내를 따르세요. 관리자/서버 설치본은 직원 클라이언트 MSI에 포함되지 않습니다.
+정식 1.x는 릴리스의 ZIP을 해제한 뒤 `Setup.exe`로 설치합니다. 포터블 실행은 지원하지 않습니다. 정식 2.x는 직원용 MSI와 해당 릴리스 안내를 따르세요. 관리자/서버 설치본은 직원 클라이언트 MSI에 포함되지 않습니다.
 
-1.7.12에서 2.0 베타 전환을 선택할 수 있습니다. 기존 앱의 “오픈베타” 표시는 베타를 뜻하는 이전 명칭이며, 화면과 채널 변경은 후속 설치본에서 적용합니다. 설치 전 업무 파일을 저장하고 공유폴더 문서·탐색기를 닫으세요.
+V2.0.5는 정식 업데이트로 제공됩니다. 1.7.12의 업데이트 확인에서 2.x 직원용 MSI를 받을 수 있으며, 기존 2.x는 회사 업데이트 경로를 이용합니다. 일부 기존 화면·바로가기의 알파테스트/오픈베타 명칭과 채널 키는 호환성을 위해 남아 있습니다. 이 표시는 현재 GitHub 릴리스의 정식 상태와 별개이며, 화면 정리는 후속 설치본에서 적용합니다. 설치 전 업무 파일을 저장하고 공유폴더 문서·탐색기를 닫으세요.
 
 - [정식 1.x 사용 안내](docs/USER-GUIDE-1.x.md)
 - [GitHub Releases](https://github.com/droidbin/SMB-Manager-for-KCAA/releases)
+
+V2.0.5 핵심 QA는 Windows 10/11 합계 **54/54개(100%)** 통과했습니다. 변경 영향이 없는 설치 UI·기존 전환·권한·복구 검사는 원래 해시와 적용 근거를 연결해 재사용했습니다. 유지보수 설치 취소 후 수동 재실행이 필요한 제한은 릴리스 안내에 기록했습니다.
 
 ## 소스와 빌드
 
 | 경로 | 내용 |
 |---|---|
+| [V2.0.5 직원 클라이언트 소스](https://github.com/droidbin/SMB-Manager-for-KCAA/tree/V2.0.5/next/client-2.0) | 검증된 빌드의 직접 C# 소스 38개와 해시 목록; 런타임·서명 도구는 별도이며 MSI 바이트 재현 보장은 아님 |
 | `src/legacy/` | 1.7.7~1.7.11 소스와 기존 문서·QA 기록 |
 | `assets/fonts/` | 중복을 정리한 공유 폰트와 제3자 안내 |
 | `tools/` | 소스 구성 검사와 기존 자산을 교체하지 않는 게시 도구 |
