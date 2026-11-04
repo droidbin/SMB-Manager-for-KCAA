@@ -4,8 +4,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>2.0.5</Version>
-    <FileVersion>2.0.145.0</FileVersion>
-    <InformationalVersion>2.0.5+patch.r3</InformationalVersion>
+    <FileVersion>2.0.145.1</FileVersion>
+    <InformationalVersion>2.0.5+patch.r4</InformationalVersion>
     <SmbOutputRoot Condition="'$(SmbOutputRoot)' == ''">$(MSBuildThisFileDirectory).local</SmbOutputRoot>
 <BaseOutputPath>$(SmbOutputRoot)/bin/$(MSBuildProjectName)/</BaseOutputPath>
     <BaseIntermediateOutputPath>$(SmbOutputRoot)/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>

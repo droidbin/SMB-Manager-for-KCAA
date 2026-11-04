@@ -12,7 +12,7 @@ manifest['directCsSources'] = [
     {'path': name, 'sha256': hashlib.sha256((root / name).read_bytes()).hexdigest().upper()}
     for name in sorted(paths)
 ]
-manifest.update(buildRevision=38, fileVersion='2.0.145.0', informationalVersion='2.0.5+patch.r3',
+manifest.update(buildRevision=38, fileVersion='2.0.145.1', informationalVersion='2.0.5+patch.r4',
     scope='Current patch source inputs only. Installer identity and dedicated Windows 10/11 QA are recorded separately; this manifest is not release approval.')
 path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print(f"Recorded {len(paths)} direct C# sources")
