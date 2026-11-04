@@ -22,3 +22,5 @@ SMB Manager V*.zip
 **/SMB Manager V*.zip
 /src/legacy/SMB Manager V*/*.exe
 /src/legacy/SMB Manager V*/Fonts/
+dist/
+*.msi
