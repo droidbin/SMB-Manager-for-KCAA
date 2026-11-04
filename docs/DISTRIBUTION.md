@@ -15,6 +15,14 @@
 | 정식 | [V1.7.12](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.12) | 현재 정식 Latest |
 | 베타 | [2.0 build32-r1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/v2.0.0-beta.5-build32-r1) | 사내 시험용, 정식 전환 전 |
 
+## V2.0.5 정식 검증
+
+2026-11-04 직원 클라이언트 V2.0.5(build37-r1, 파일 버전 2.0.145.0)를 정식 Latest로 전환했습니다. 핵심 필수 세부 검사 54/54개(100%)와 최종 전달 검사를 통과했습니다. GitHub 재다운로드, 두 전용 VM의 실제 구버전→전달된 설치본 업데이트, 별도 SMB 서버 계정·파일 작업, 운영 서버의 허용된 인증 전체 다운로드를 검증했습니다. 영향 없는 기존 설치 UI·전환·권한·복구 결과는 원래 해시와 재사용 근거를 유지합니다.
+
+[정식 설치 파일 및 제한 사항](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.5) · [공개 검증 요약](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/download/V2.0.5/qa-summary.json) · [직접 C# 소스 38개와 해시 목록](https://github.com/droidbin/SMB-Manager-for-KCAA/tree/V2.0.5/next/client-2.0)
+
+기존 두 호환 업데이트 경로에 동일 파일을 반영했으며 기기 배정·권한과 서버 실행을 유지했습니다. 비허용 계정의 기존 제한 채널 거부를 정상 동작으로 확인했으며 해당 계정으로 그 채널의 다운로드가 성공했다고 주장하지 않습니다. 화면·바로가기의 일부 이전 명칭은 후속 설치본에서 정리합니다. 관리자 앱과 별도 PC자산 조사 통합 개발은 이번 클라이언트 배포에 포함하지 않습니다.
+
 ## 과거 시험 배포 안내
 
 build25/31/32의 당시 예외 배포 및 미완료 QA 기록은 그대로 보존합니다. 예전 알파/클로즈/오픈 명칭을 베타로 정리해도 과거 결과를 Pass로 바꾸거나 기존 2.0 베타를 정식으로 승격하지 않습니다. 태그와 설치파일 바이트, 다운로드 주소는 유지합니다. 기존 채널 키·저장된 선택·접근 권한은 문서 편집으로 변경하지 않습니다.
