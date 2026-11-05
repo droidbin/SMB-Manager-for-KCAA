@@ -1,0 +1,57 @@
+name: Client 2.0 Windows build
+on:
+  push:
+    paths: ['next/client-2.0/**', 'tools/PatchContractChecks/**', 'tools/LegacyUpdateProbe/**', '.github/workflows/client-2.0-windows.yml']
+  pull_request:
+    paths: ['next/client-2.0/**', 'tools/PatchContractChecks/**', 'tools/LegacyUpdateProbe/**', '.github/workflows/client-2.0-windows.yml']
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload the unsigned CI publish output (not a release; not the signed MSI)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: client-2.0-windows-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+jobs:
+  build:
+    # Build and pure checks only. Never launches the client, installs an MSI,
+    # touches registration, credentials or SMB mappings on the runner.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Pure patch contract checks
+        run: dotnet run --project tools/PatchContractChecks -c Release
+      - name: Build legacy update probe
+        run: dotnet build tools/LegacyUpdateProbe -c Release
+      - name: Publish ClientDesktop (README command)
+        run: >-
+          dotnet publish next/client-2.0/ClientDesktop/ClientDesktop.csproj -c Release -r win-x64
+          --self-contained false -p:FileVersion=2.0.145.1 -p:InformationalVersion=2.0.5+patch.r4
+          -o .local/ci-publish/ClientDesktop
+      - name: Verify published file version
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = Get-ChildItem .local/ci-publish/ClientDesktop -Filter *.exe | Select-Object -First 1
+          if (!$exe) { throw 'Published executable not found.' }
+          $info = $exe.VersionInfo
+          "$($exe.Name) FileVersion=$($info.FileVersion) ProductVersion=$($info.ProductVersion)"
+          if ($info.FileVersion -ne '2.0.145.1') { throw "Unexpected FileVersion $($info.FileVersion)" }
+          if (!$info.ProductVersion.StartsWith('2.0.5+patch.r4')) { throw "Unexpected ProductVersion $($info.ProductVersion)" }
+      - if: github.event_name == 'workflow_dispatch' && inputs.upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-2.0-unsigned-ci-publish
+          path: .local/ci-publish/ClientDesktop
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7
