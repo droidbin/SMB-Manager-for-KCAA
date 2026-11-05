@@ -47,6 +47,20 @@ jobs:
           "$($exe.Name) FileVersion=$($info.FileVersion) ProductVersion=$($info.ProductVersion)"
           if ($info.FileVersion -ne '2.0.145.1') { throw "Unexpected FileVersion $($info.FileVersion)" }
           if (!$info.ProductVersion.StartsWith('2.0.5+patch.r4')) { throw "Unexpected ProductVersion $($info.ProductVersion)" }
+      - name: Verify bundled fonts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($name in 'NotoSansCJKkr-Regular.otf', 'NotoSansCJKkr-Bold.otf', 'LICENSE-NotoSansCJK.txt', 'OFL.txt') {
+            $published = Join-Path .local/ci-publish/ClientDesktop/Fonts $name
+            if (!(Test-Path -LiteralPath $published)) { throw "Font file missing from publish output: $name" }
+          }
+          foreach ($name in 'NotoSansCJKkr-Regular.otf', 'NotoSansCJKkr-Bold.otf') {
+            $source = (Get-FileHash -LiteralPath (Join-Path assets/fonts/noto-sans-cjk-kr $name)).Hash
+            $published = (Get-FileHash -LiteralPath (Join-Path .local/ci-publish/ClientDesktop/Fonts $name)).Hash
+            if ($source -ne $published) { throw "Published font differs from assets/fonts: $name" }
+          }
+          Get-ChildItem .local/ci-publish/ClientDesktop/Fonts | Format-Table Name, Length
       - if: github.event_name == 'workflow_dispatch' && inputs.upload
         uses: actions/upload-artifact@v4
         with:

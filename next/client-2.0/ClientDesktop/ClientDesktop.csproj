@@ -10,7 +10,7 @@
     <ProjectReference Include="../ClientEngine/ClientEngine.csproj" />
     <Compile Include="../UiDiagnostics.cs" Link="UiDiagnostics.cs" />
     <Compile Include="../UiTheme.cs" Link="UiTheme.cs" />
-    <Content Include="C:\Users\Admin\Documents\Codex_Project\SMB Manager\SMB Manager V1.7.11\Fonts\*" Link="Fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="$(MSBuildThisFileDirectory)../../../assets/fonts/noto-sans-cjk-kr/*" Link="Fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../Assets/NotoSansCJK-OFL.txt" Link="Fonts/OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
