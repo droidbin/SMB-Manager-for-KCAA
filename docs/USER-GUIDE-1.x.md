@@ -106,12 +106,6 @@ V1.7.11 배포 파일은 `latest.ini`의 `Version=V1.7.11`, `FileName=SMB Manage
 
 상세 결과는 설치 패키지의 `REAL-RECONNECT-QA.md`를 참고하세요. 네트워크 전체 단절, 서버 재부팅, 보안 프로그램별 호환성은 해당 시험에 포함되지 않았습니다.
 
-## 개발 및 빌드
+## 소스
 
-V1.7.11 소스는 `src\legacy\SMB Manager V1.7.11\source`에 있습니다.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File ".\src\legacy\SMB Manager V1.7.11\source\build.ps1"
-```
-
-빌드 결과는 저장소 루트의 `.local\legacy-builds`에 생성됩니다. 게시된 Releases 자산은 변경하지 않습니다. 자세한 절차는 [배포와 소스 이력](DISTRIBUTION.md)을 참고하세요.
+소스와 개발 기록은 비공개 개발 저장소에서 관리합니다. 이 저장소는 설치 파일 배포와 안내 문서만 제공합니다.
