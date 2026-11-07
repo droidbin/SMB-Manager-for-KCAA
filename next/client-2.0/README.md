@@ -1,6 +1,6 @@
 # SMB Manager 2.0.5 client source
 
-This tree contains the reviewed 2.0.5 patch sources based on build37. It includes the published 1.7.12 legacy hash catalog and the single-instance activation fix. It excludes the separate asset-survey integration work. SOURCE-MANIFEST.json records current patch inputs, not the original build37 bytes or runtime QA approval.
+This tree contains the reviewed 2.0.5 patch sources based on build37. It includes the published 1.7.12 legacy hash catalog and the single-instance activation fix. SOURCE-MANIFEST.json records current patch inputs, not the original build37 bytes or runtime QA approval.
 
 Build on Windows with .NET 10 SDK:
 

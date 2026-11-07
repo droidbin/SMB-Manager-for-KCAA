@@ -1,6 +1,6 @@
 # 2.0.5 patch review and correction
 
-The original patch branch was reviewed against master ab39c0b and the original build37 source snapshot. The corrections keep marketing version 2.0.5, file version 2.0.145.0 and MSI version 2.0.145. The asset-survey integration and administrator/server deployment are excluded.
+The original patch branch was reviewed against master ab39c0b and the original build37 source snapshot. The corrections keep marketing version 2.0.5, file version 2.0.145.0 and MSI version 2.0.145. Administrator/server deployment is excluded.
 
 ## Corrected behavior
 
