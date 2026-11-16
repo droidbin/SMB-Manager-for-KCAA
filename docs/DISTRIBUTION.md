@@ -5,7 +5,7 @@
 | 구분 | 배포 | 상태 |
 |---|---|---|
 | 정식 | [V2.0.10](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.10) | 현재 정식 Latest · 파일 버전 2.0.157.0 · 직원 설치본, 관리자 암호 ZIP, 1.7.7·1.7.8용 직접 업데이트 zip |
-| 관리자 전용 정식 | [V2.1.1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.1.1) | 정식이지만 Latest 아님(Latest는 V2.0.10 유지, 1.7 직접 업데이트 경로 보호) · 파일 버전 2.1.161.0 · 관리자 암호 ZIP만 포함, 직원 설치본 없음 · 코어 QA 18/18(100%). 직전 관리자 정식 [V2.1.0](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.1.0)도 공개 상태 |
+| 관리자 전용 정식 | [V2.1.1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.1.1) | 정식이지만 Latest 아님(Latest는 V2.0.10 유지, 1.7 직접 업데이트 경로 보호) · 파일 버전 2.1.161.0 · 관리자 암호 ZIP만 포함, 직원 설치본 없음 · 코어 QA 18/18(100%). 직전 관리자 정식 V2.1.0은 초안으로 내려 공개 목록과 다운로드 주소에서 제외(태그와 복구용 ZIP은 보존) |
 | 전환 | [V1.7.14](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V1.7.14) | 1.7.9~1.7.12를 2.0.10으로 옮기는 전환용 zip(설치 파일 = 2.0.10) |
 
 **현재 정식보다 낮은 버전은 GitHub에서 받을 수 없습니다(2026-11-07부터).**
