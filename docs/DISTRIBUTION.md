@@ -19,7 +19,7 @@
 | 사용자 버전 | 경로 |
 |---|---|
 | 2.0 정식 | 회사 관리 서버의 정식 업데이트 안내(2.0.11) |
-| 2.0 베타 | 회사 관리 서버의 베타 업데이트 안내(2.0.13-beta.1, [V2.0.13-beta.1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.13-beta.1) prerelease, Latest 아님) |
+| 2.0 베타 | 회사 관리 서버의 베타 업데이트 안내(2.0.15-beta.1, [V2.0.15-beta.1](https://github.com/droidbin/SMB-Manager-for-KCAA/releases/tag/V2.0.15-beta.1) prerelease, Latest 아님) |
 | 2.0.5 미만(예전 채널) | 예전 경로로 요청해도 베타 업데이트를 안내 |
 | 1.7.7 · 1.7.8 | 정식 Latest 릴리스의 첫 zip(`SMB-Manager-1.7-Direct-Update-V<버전>.zip`) |
 | 1.7.9 ~ 1.7.12 | 1.x 태그 중 가장 높은 전환 릴리스(현재 V1.7.14)의 zip |
